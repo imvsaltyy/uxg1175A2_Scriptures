@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Timeline;
@@ -13,6 +14,8 @@ public class spawnEnemy : MonoBehaviour
     #region Enemy Stats
     [HideInInspector]
     public string id;
+    [HideInInspector]
+    public string variantID;
     [HideInInspector]
     public string lootTableID;
     [HideInInspector]
@@ -49,25 +52,27 @@ public class spawnEnemy : MonoBehaviour
 
     private void Awake()
     {
-        LoadExcelData();
+        //LoadExcelData();
+        //player = GameObject.FindWithTag("Player");
 
-        player = GameObject.FindWithTag("Player");
-        attackCollider = this.gameObject.GetComponentInChildren<BoxCollider2D>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
-        
+
+        statsAssignment();
+        attackCollider = this.gameObject.GetComponentInChildren<BoxCollider2D>();
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
+        
         if (isAlive && DoT == null)
         {
-
-            //DoT = StartCoroutine(damageOT());
+            //Damage Over Time to emulate death
+            DoT = StartCoroutine(damageOT());
         }
 
         if (HP <= 0)
@@ -76,7 +81,7 @@ public class spawnEnemy : MonoBehaviour
             isDead = !isDead;
 
             Debug.Log("Enemy Dead");
-            Destroy(gameObject);
+            //Destroy(gameObject);
             //enemyDead();
 
             StopAllCoroutines();
@@ -94,6 +99,42 @@ public class spawnEnemy : MonoBehaviour
             Atk = StartCoroutine(attack());
         }
 
+    }
+
+    void statsAssignment()
+    {
+        bool assigned = false;
+
+        for (int i = 0; i < GameManager.enemyType.Length; i++)
+        {
+            string[] columns = GameManager.enemyType[i].Split(',');
+
+            if (columns[0] == enemyTypeName)
+            {
+                id = columns[0];
+                variantID = columns[1];
+
+                HP = float.Parse(columns[2]);
+                damage = float.Parse(columns[3]);
+                speed = float.Parse(columns[4]);
+
+                //newEnemy.attackRange = float.Parse(columns[5]);
+                //newEnemy.attackCooldown = float.Parse(columns[6]);
+                //newEnemy.detectionRange = float.Parse(columns[7]);
+
+                lootTableID = columns[8];
+
+                assigned = true;
+            }
+
+        }
+
+        //Failsafe if enemy type is not found
+        if (!assigned)
+        {
+            Debug.Log("Enemy type not found!");
+            Destroy(gameObject);
+        }
     }
 
     //Getting Enemy Stats from Data File
