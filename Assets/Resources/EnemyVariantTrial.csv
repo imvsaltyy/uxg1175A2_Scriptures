@@ -1,0 +1,3 @@
+EnemyVariantID,name,hpMultiplier,damageMultiplier,speedMultiplier,scaleMultiplier,onDeathEffect
+variant_normal,normal,1,1,1,1,none
+variant_fast,fast,0.8,1,1.5,0.9,none
