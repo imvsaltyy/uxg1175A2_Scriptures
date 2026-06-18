@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 78ddc0274135bc844882ac0c55c026b9
+guid: 074b91077b5827c46960c5651eb87b0d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4629613613065720279
-    second: Frame 15_0
+      213: 4347341491811462203
+    second: Frame 11_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +96,69 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Frame 15_0
+      name: Frame 11_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 77
-        height: 154
+        width: 363
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 92ea7e992fe40cfb0800000000000000
-      internalID: -4629613613065720279
+      spriteID: b3c2db8bd0cd45c30800000000000000
+      internalID: 4347341491811462203
       vertices: []
       indices: 
       edges: []
@@ -135,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Frame 15_0: -4629613613065720279
+      Frame 11_0: 4347341491811462203
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

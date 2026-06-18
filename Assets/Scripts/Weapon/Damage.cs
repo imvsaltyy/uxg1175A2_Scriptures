@@ -18,7 +18,7 @@ public class Damage : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("HP Deducted");
-        StartCoroutine(damageFlash(collision));
+        //StartCoroutine(damageFlash(collision));
     }
 
     IEnumerator damageFlash(Collider2D collision)

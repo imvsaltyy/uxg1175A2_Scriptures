@@ -4,28 +4,22 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Timeline;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class spawnEnemy : MonoBehaviour
 {
-    public string enemyTypeName;
+    [HideInInspector] public string enemyTypeName;
 
     #region Enemy Stats
-    [HideInInspector]
-    public string id;
-    [HideInInspector]
-    public string variantID;
-    [HideInInspector]
-    public string lootTableID;
-    [HideInInspector]
-    public float HP;
-    [HideInInspector]
-    public float damage;
-    [HideInInspector]
-    public float speed;
+    [HideInInspector] public string ID;
+    [HideInInspector] public string variantID;
+    [HideInInspector] public string lootTableID;
+    [HideInInspector] public float HP;
+    [HideInInspector] public float damage;
+    [HideInInspector] public float speed;
 
-    //public float attackRange;
+     public float attackRange;
     //public float attackCooldown;
 
     [HideInInspector]
@@ -42,8 +36,8 @@ public class spawnEnemy : MonoBehaviour
     public bool isAlive = true;
     public bool isDead = false;
 
-    private float distance;
-    private GameObject player;
+    public float distance;
+    [HideInInspector] public GameObject player;
 
     public Coroutine DoT;
     public Coroutine Atk;
@@ -53,26 +47,41 @@ public class spawnEnemy : MonoBehaviour
     private void Awake()
     {
         //LoadExcelData();
-        //player = GameObject.FindWithTag("Player");
 
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
-
         statsAssignment();
-        attackCollider = this.gameObject.GetComponentInChildren<BoxCollider2D>();
+        player = GameObject.FindWithTag("Player");
+
+        gameObject.GetComponent<CircleCollider2D>().radius = detectionRange;
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
-        
+        distance = Vector2.Distance(transform.position, player.transform.position);
+
         if (isAlive && DoT == null)
         {
             //Damage Over Time to emulate death
-            DoT = StartCoroutine(damageOT());
+            //DoT = StartCoroutine(damageOT());
+        }
+
+        if (distance <= attackRange && idleState && !attackState)
+        {
+            idleState = false;
+            chasedState = false;
+            attackState = true;
+        }
+
+        if (distance > detectionRange && !idleState)
+        {
+            idleState = true;
+            chasedState = false;
+            attackState = false;
         }
 
         if (HP <= 0)
@@ -80,7 +89,7 @@ public class spawnEnemy : MonoBehaviour
             isAlive = !isAlive;
             isDead = !isDead;
 
-            Debug.Log("Enemy Dead");
+            //Debug.Log("Enemy Dead");
             //Destroy(gameObject);
             //enemyDead();
 
@@ -95,8 +104,8 @@ public class spawnEnemy : MonoBehaviour
 
         if (attackState && !chasedState && Atk == null)
         {
-            Debug.Log("Enter Attack State");
-            Atk = StartCoroutine(attack());
+            //Debug.Log("Enter Attack State");
+            enemyAttack();
         }
 
     }
@@ -111,20 +120,26 @@ public class spawnEnemy : MonoBehaviour
 
             if (columns[0] == enemyTypeName)
             {
-                id = columns[0];
+                ID = columns[0];
                 variantID = columns[1];
 
                 HP = float.Parse(columns[2]);
                 damage = float.Parse(columns[3]);
                 speed = float.Parse(columns[4]);
-
-                //newEnemy.attackRange = float.Parse(columns[5]);
+                attackRange = float.Parse(columns[5]);  
+ 
                 //newEnemy.attackCooldown = float.Parse(columns[6]);
-                //newEnemy.detectionRange = float.Parse(columns[7]);
+                
+                detectionRange = float.Parse(columns[7]);
 
                 lootTableID = columns[8];
 
                 assigned = true;
+                Debug.Log(ID + " Enemy stats assigned");
+
+                //Debug.Log("HP: " + HP);
+                //Debug.Log("Damage: " + damage);
+                //Debug.Log("Speed: " + speed);
             }
 
         }
@@ -137,59 +152,61 @@ public class spawnEnemy : MonoBehaviour
         }
     }
 
-    //Getting Enemy Stats from Data File
-    void LoadExcelData()
-    {
-        bool assigned = false;
+    //LoadExcelData()
 
-        //Load CSV file from the Resources folder
-        TextAsset enemyCSV = Resources.Load<TextAsset>("EnemyStatsTrial");
+    //Getting Enemy Stats from Data File (Unused)
+    //void LoadExcelData()
+    //{
+    //    bool assigned = false;
 
-        if (enemyCSV == null)
-        {
-            //Debug.LogError("CSV file not found.");
-            return;
-        }
+    //    //Load CSV file from the Resources folder
+    //    TextAsset enemyCSV = Resources.Load<TextAsset>("EnemyStatsTrial");
 
-        string[] rows = enemyCSV.text.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
+    //    if (enemyCSV == null)
+    //    {
+    //        //Debug.LogError("CSV file not found.");
+    //        return;
+    //    }
 
-        for (int i = 1; i < rows.Length; i++)
-        {
-            //Skip empty rows
-            if (string.IsNullOrWhiteSpace(rows[i])) continue;
+    //    string[] rows = enemyCSV.text.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
 
-            //Split columns by comma delimiter
-            string[] columns = rows[i].Split(',');
+    //    for (int i = 1; i < rows.Length; i++)
+    //    {
+    //        //Skip empty rows
+    //        if (string.IsNullOrWhiteSpace(rows[i])) continue;
 
-            if (columns[0] != enemyTypeName) continue;
+    //        //Split columns by comma delimiter
+    //        string[] columns = rows[i].Split(',');
 
-            //Assign vales to variables in the order that is inside the CSV File
-            else
-            {
-                id = columns[0];
+    //        if (columns[0] != enemyTypeName) continue;
 
-                this.HP = float.Parse(columns[1]);
-                damage = float.Parse(columns[2]);
-                speed = float.Parse(columns[3]);
+    //        //Assign vales to variables in the order that is inside the CSV File
+    //        else
+    //        {
+    //            ID = columns[0];
 
-                //newEnemy.attackRange = float.Parse(columns[4]);
-                //newEnemy.attackCooldown = float.Parse(columns[5]);
-                //newEnemy.detectionRange = float.Parse(columns[6]);
+    //            this.HP = float.Parse(columns[1]);
+    //            damage = float.Parse(columns[2]);
+    //            speed = float.Parse(columns[3]);
 
-                lootTableID = columns[7];
+    //            //newEnemy.attackRange = float.Parse(columns[4]);
+    //            //newEnemy.attackCooldown = float.Parse(columns[5]);
+    //            //newEnemy.detectionRange = float.Parse(columns[6]);
 
-                assigned = !assigned;
-            }
+    //            lootTableID = columns[7];
 
-        }
+    //            assigned = !assigned;
+    //        }
 
-        //Failsafe if enemy type is not found
-        if (!assigned)
-        {
-            Debug.Log("Enemy type not found!");
-            Destroy(gameObject);
-        }
-    }
+    //    }
+
+    //    //Failsafe if enemy type is not found
+    //    if (!assigned)
+    //    {
+    //        Debug.Log("Enemy type not found!");
+    //        Destroy(gameObject);
+    //    }
+    //}
 
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -223,7 +240,6 @@ public class spawnEnemy : MonoBehaviour
 
     public void playerChase()
     {
-        distance = Vector2.Distance(transform.position, player.transform.position);
 
         Vector2 direction = player.transform.position - transform.position;
         direction.Normalize();
@@ -233,7 +249,7 @@ public class spawnEnemy : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(Vector3.forward * angle);
 
-        if (distance <= 1 && !attackState)
+        if (distance <= attackRange && !attackState)
         {
             chasedState = false;
             attackState = true;
@@ -253,31 +269,9 @@ public class spawnEnemy : MonoBehaviour
 
     }
 
-    public virtual IEnumerator attack()
-    {
-        while (attackState)
-        {
-            yield return new WaitForSeconds(0.2f);
-            //Trigger Start Attack Animation here
-
-            //Insert Attack Code here
-            enemyAttack();
-            
-            //Trigger End Ataack Animation here
-            yield return new WaitForSeconds(1f);
-
-            Debug.Log("End Attack");
-
-            idleState = true;
-            attackState = false;
-            attackCollider.enabled = false;
-        }
-
-        Atk = null;
-    }
-
     public virtual void enemyAttack()
     {
-        Debug.Log("Basic Enemy Attack");
+        //Debug.Log("Basic Enemy Attack");
+        
     }
 }

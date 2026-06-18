@@ -99,7 +99,7 @@ public class PlayerControl : MonoBehaviour
 
         if (distanceToTarget > viewDistance)
         {
-            Debug.Log("Target too far");
+            //Debug.Log("Target too far");
             return;
         }
 
@@ -113,11 +113,11 @@ public class PlayerControl : MonoBehaviour
 
         if (dot >= angleLimit)
         {
-            Debug.Log("Target is inside FOV");
+            //Debug.Log("Target is inside FOV");
         }
         else
         {
-            Debug.Log("Target is outside FOV");
+            //Debug.Log("Target is outside FOV");
         }
     }
 }
