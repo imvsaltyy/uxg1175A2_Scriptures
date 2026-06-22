@@ -14,15 +14,22 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float rotationSpeed = 720f;
 
     [Header("FOV")]
-    [SerializeField] private Transform fovTriangle;
+    [SerializeField] private Transform visionLight;
+
+    [Header("FOV Detection")]
     [SerializeField] private float viewDistance = 5f;
-    [SerializeField] private float viewAngle = 60f;
-    //to test
-    [SerializeField] private Transform target;
+    [SerializeField] private float viewAngle = 90f;
+
+    public bool canShootEnemy;
+
+    private Camera mainCam;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        mainCam = Camera.main;
+
         moveAction = InputSystem.actions.FindAction("Move");
         attackAction = InputSystem.actions.FindAction("Attack");
         reloadAction = InputSystem.actions.FindAction("Reload");
@@ -51,20 +58,30 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         MovePlayer();
-        RotateSprite();
-        CheckFOV();
+        RotateToMouse();
+        CheckEnemiesInFOV();
     }
 
     private void MovePlayer()
     {
-        Vector2 dir = moveAction.ReadValue<Vector2>();
+        Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
-        transform.position += (Vector3)(dir * speed * Time.deltaTime);
+        transform.position += (Vector3)(moveInput * speed * Time.deltaTime);
+    }
 
-        if (dir.sqrMagnitude > 0.01f)
+    private void RotateToMouse()
+    {
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
+        mouseWorldPos.z = transform.position.z;
+
+        Vector2 lookDir = mouseWorldPos - transform.position;
+
+        if (lookDir.sqrMagnitude > 0.01f)
         {
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            Quaternion targetRotation = Quaternion.Euler(0, 0, angle - 90f);
+            float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+
+            Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle - 90f);
 
             playerSprite.rotation = Quaternion.RotateTowards(
                 playerSprite.rotation,
@@ -72,52 +89,45 @@ public class PlayerControl : MonoBehaviour
                 rotationSpeed * Time.deltaTime
             );
 
-            if (fovTriangle != null)
+            visionLight.rotation = Quaternion.RotateTowards(
+                visionLight.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private void CheckEnemiesInFOV()
+    {
+        canShootEnemy = false;
+
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            Vector2 playerPos = transform.position;
+            Vector2 enemyPos = enemy.transform.position;
+
+            Vector2 directionToEnemy = enemyPos - playerPos;
+            float distanceToEnemy = directionToEnemy.magnitude;
+
+            if (distanceToEnemy > viewDistance)
+                continue;
+
+            directionToEnemy.Normalize();
+
+            Vector2 playerForward = playerSprite.up;
+
+            float dot = Vector2.Dot(playerForward, directionToEnemy);
+
+            float angleLimit = Mathf.Cos((viewAngle / 2f) * Mathf.Deg2Rad);
+
+            if (dot >= angleLimit)
             {
-                fovTriangle.rotation = playerSprite.rotation;
+                canShootEnemy = true;
+                Debug.Log("Enemy in FOV. Can shoot.");
+                return;
             }
-        }
-    }
-
-    private void RotateSprite()
-    {
-        //empty for now
-        //if want mouse rotation
-    }
-
-    private void CheckFOV()
-    {
-        if (target == null)
-            return;
-
-        Vector2 playerPos = transform.position;
-        Vector2 targetPos = target.position;
-
-        Vector2 directionToTarget = targetPos - playerPos;
-
-        float distanceToTarget = directionToTarget.magnitude;
-
-        if (distanceToTarget > viewDistance)
-        {
-            //Debug.Log("Target too far");
-            return;
-        }
-
-        directionToTarget.Normalize();
-
-        Vector2 playerForward = playerSprite.up;
-
-        float dot = Vector2.Dot(playerForward, directionToTarget);
-
-        float angleLimit = Mathf.Cos((viewAngle / 2f) * Mathf.Deg2Rad);
-
-        if (dot >= angleLimit)
-        {
-            //Debug.Log("Target is inside FOV");
-        }
-        else
-        {
-            //Debug.Log("Target is outside FOV");
         }
     }
 }
