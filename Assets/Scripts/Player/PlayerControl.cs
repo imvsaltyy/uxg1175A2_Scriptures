@@ -33,7 +33,7 @@ public class PlayerControl : MonoBehaviour
         playerStats = GetComponent<PlayerStats>();
         playerStats.statsAssignment();
 
-        speed = playerStats.speed;
+        speed = playerStats.baseMoveSpeed;
         viewDistance = playerStats.vision;
         viewAngle = playerStats.fovAngle;
         rotationSpeed = playerStats.rotationSpeed;

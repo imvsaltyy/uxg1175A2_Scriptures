@@ -1,9 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Enumeration;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour
     public static string[] weaponTypes;
     [HideInInspector]
     public static string[] playerStats;
+    [HideInInspector]
+    public static string[] shopUpgrades;
 
     public iInventory[] inventory;
 
@@ -25,6 +28,9 @@ public class GameManager : MonoBehaviour
     //Game Management Area
     GameObject[] activeEnemies;
 
+    [Header("Scene Management")]
+    public string gameSceneName = "Main";
+
     void Awake()
     {
         //Load data from the CSV Files in Resources and assign into String[]
@@ -32,6 +38,7 @@ public class GameManager : MonoBehaviour
         enemyVariant = LoadExcelData("EnemyVariantTrial");
         weaponTypes = LoadExcelData("WeaponStatsTrial");
         playerStats = LoadExcelData("PlayerStatsTrial");
+        shopUpgrades = LoadExcelData("ShopUpgradesTrial");
     }
 
     void Start()
@@ -48,6 +55,11 @@ public class GameManager : MonoBehaviour
         //    Debug.Log("Enemy Found: " + activeEnemies[i].GetComponent<spawnEnemy>().id);
         //}
 
+    }
+
+    public void SwitchToGameScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
     }
 
     //private void OnApplicationQuit()
