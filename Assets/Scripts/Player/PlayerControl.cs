@@ -31,11 +31,14 @@ public class PlayerControl : MonoBehaviour
     private void Start()
     {
         playerStats = GetComponent<PlayerStats>();
+        playerStats.statsAssignment();
 
         speed = playerStats.speed;
         viewDistance = playerStats.vision;
         viewAngle = playerStats.fovAngle;
         rotationSpeed = playerStats.rotationSpeed;
+
+        Debug.Log("Speed from CSV: " + speed);
 
 
         mainCam = Camera.main;

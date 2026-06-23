@@ -19,6 +19,7 @@ public class PlayerStats : MonoBehaviour
     [HideInInspector] public float critDamage;
     #endregion
 
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
@@ -31,7 +32,7 @@ public class PlayerStats : MonoBehaviour
 
     }
 
-    private void statsAssignment()
+    public void statsAssignment()
     {
         if (GameManager.playerStats == null || GameManager.playerStats.Length == 0)
         {
