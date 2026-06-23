@@ -52,11 +52,19 @@ public class enemyShooter : spawnEnemy
 
         //Debug.Log("shooterEnemyAttack");
 
-        if (Time.time >= nextTimeToFire)
+        if (Time.time >= nextTimeToFire && gameObject.GetComponentInChildren<nerfGun>() != null)
         {
             nextTimeToFire = Time.time + gameObject.GetComponentInChildren<nerfGun>().fireRate;
-            gameObject.GetComponentInChildren<nerfGun>().Fire();
+            gameObject.GetComponentInChildren<nerfGun>().Fire(damage);
         }
+
+        else if (Time.time >= nextTimeToFire && gameObject.GetComponentInChildren<lazerGun>() != null)
+        {
+            nextTimeToFire = Time.time + gameObject.GetComponentInChildren<lazerGun>().fireRate;
+            gameObject.GetComponentInChildren<lazerGun>().Fire(damage);
+        }
+
+
     }
 
 

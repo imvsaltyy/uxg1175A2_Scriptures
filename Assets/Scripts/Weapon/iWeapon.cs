@@ -11,6 +11,8 @@ public class iWeapon : iInventory
     [HideInInspector] public float dmgMultiplier;
     [HideInInspector] public float fireRate;
     [HideInInspector] public float damageSpeed;
+    [HideInInspector] public float raySize;
+    [HideInInspector] public float increaseRate;
 
 
     protected virtual void Start()
@@ -32,6 +34,8 @@ public class iWeapon : iInventory
                 dmgMultiplier = float.Parse(columns[1]);
                 fireRate = float.Parse(columns[2]);
                 damageSpeed = float.Parse(columns[3]);
+                raySize = float.Parse(columns[4]);
+                increaseRate = float.Parse(columns[5]);
 
                 assigned = true;
                 Debug.Log(ID + " stats assigned");
