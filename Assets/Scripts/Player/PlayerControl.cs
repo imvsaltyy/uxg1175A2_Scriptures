@@ -12,11 +12,11 @@ public class PlayerControl : MonoBehaviour
     private InputAction reloadAction;
 
     [Header("Rotation")]
-    private Transform playerSprite;
+    [SerializeField] private Transform playerSprite;
     private float rotationSpeed;
 
     [Header("FOV")]
-    private Transform visionLight;
+    [SerializeField] private Transform visionLight;
     private float viewDistance;
     private float viewAngle;
 
