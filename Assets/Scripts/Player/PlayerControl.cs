@@ -3,22 +3,24 @@ using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
+    private PlayerStats playerStats;
+
     [Header("Movement")]
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float speed;
     [SerializeField] private InputAction moveAction;
     [SerializeField] private InputAction attackAction;
     [SerializeField] private InputAction reloadAction;
 
     [Header("Rotation")]
     [SerializeField] private Transform playerSprite;
-    [SerializeField] private float rotationSpeed = 720f;
+    [SerializeField] private float rotationSpeed;
 
     [Header("FOV")]
     [SerializeField] private Transform visionLight;
 
     [Header("FOV Detection")]
-    [SerializeField] private float viewDistance = 5f;
-    [SerializeField] private float viewAngle = 90f;
+    [SerializeField] private float viewDistance;
+    [SerializeField] private float viewAngle;
 
     public bool canShootEnemy;
 
@@ -28,6 +30,14 @@ public class PlayerControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        playerStats = GetComponent<PlayerStats>();
+
+        speed = playerStats.speed;
+        viewDistance = playerStats.vision;
+        viewAngle = playerStats.fovAngle;
+        rotationSpeed = playerStats.rotationSpeed;
+
+
         mainCam = Camera.main;
 
         moveAction = InputSystem.actions.FindAction("Move");
@@ -49,10 +59,10 @@ public class PlayerControl : MonoBehaviour
             Debug.Log("canceled");
         };
 
-        reloadAction.started += (x) =>
-        {
-            Debug.Log("reload");
-        };
+        //reloadAction.started += (x) =>
+        //{
+        //    Debug.Log("reload");
+        //};
     }
     // Update is called once per frame
     private void Update()

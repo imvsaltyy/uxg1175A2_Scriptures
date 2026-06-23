@@ -1,0 +1,2 @@
+Character Id,baseHP,baseDamage,baseSpeed,baseVision,baseFOVAngle,rotationSpeed,baseInventorySize,baseCritRate,baseCritDamage
+player_base,100,10,5,5,90,720,4,0.05,0.2

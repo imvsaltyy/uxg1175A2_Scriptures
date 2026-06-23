@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public static string[] enemyVariant;
     [HideInInspector]
     public static string[] weaponTypes;
+    [HideInInspector]
+    public static string[] playerStats;
 
     public iInventory[] inventory;
 
@@ -29,7 +31,7 @@ public class GameManager : MonoBehaviour
         enemyType = LoadExcelData("EnemyStatsTrial");
         enemyVariant = LoadExcelData("EnemyVariantTrial");
         weaponTypes = LoadExcelData("WeaponStatsTrial");
-        
+        playerStats = LoadExcelData("PlayerStatsTrial");
     }
 
     void Start()
