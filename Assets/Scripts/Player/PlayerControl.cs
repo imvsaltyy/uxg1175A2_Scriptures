@@ -6,21 +6,19 @@ public class PlayerControl : MonoBehaviour
     private PlayerStats playerStats;
 
     [Header("Movement")]
-    [SerializeField] private float speed;
-    [SerializeField] private InputAction moveAction;
-    [SerializeField] private InputAction attackAction;
-    [SerializeField] private InputAction reloadAction;
+    private float speed;
+    private InputAction moveAction;
+    private InputAction attackAction;
+    private InputAction reloadAction;
 
     [Header("Rotation")]
-    [SerializeField] private Transform playerSprite;
-    [SerializeField] private float rotationSpeed;
+    private Transform playerSprite;
+    private float rotationSpeed;
 
     [Header("FOV")]
-    [SerializeField] private Transform visionLight;
-
-    [Header("FOV Detection")]
-    [SerializeField] private float viewDistance;
-    [SerializeField] private float viewAngle;
+    private Transform visionLight;
+    private float viewDistance;
+    private float viewAngle;
 
     public bool canShootEnemy;
 

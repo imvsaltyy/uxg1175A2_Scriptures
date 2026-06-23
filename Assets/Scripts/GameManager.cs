@@ -28,9 +28,6 @@ public class GameManager : MonoBehaviour
     //Game Management Area
     GameObject[] activeEnemies;
 
-    [Header("Scene Management")]
-    public string gameSceneName = "Main";
-
     void Awake()
     {
         //Load data from the CSV Files in Resources and assign into String[]
@@ -55,11 +52,6 @@ public class GameManager : MonoBehaviour
         //    Debug.Log("Enemy Found: " + activeEnemies[i].GetComponent<spawnEnemy>().id);
         //}
 
-    }
-
-    public void SwitchToGameScene()
-    {
-        SceneManager.LoadScene(gameSceneName);
     }
 
     //private void OnApplicationQuit()

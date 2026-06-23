@@ -49,10 +49,10 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         statsAssignment();
-        Debug.Log("===== BEFORE SHOP UPGRADES =====");
+        Debug.Log("stats before shop upgrades");
         DebugCurrentStats();
         ApplyPurchasedShopUpgrades();
-        Debug.Log("===== AFTER SHOP UPGRADES =====");
+        Debug.Log("stats after shop upgrades");
         DebugCurrentStats();
     }
 
