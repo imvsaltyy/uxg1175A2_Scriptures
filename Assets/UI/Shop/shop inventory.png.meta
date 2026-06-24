@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 651af2903d1cc624f91eb40e482a823b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1263343581792455555
+    second: shop inventory_0
+  - first:
+      213: -7696878293939132299
+    second: shop inventory_1
+  - first:
+      213: -4458581346538681650
+    second: shop inventory_2
+  - first:
+      213: -5497201372836728148
+    second: shop inventory_3
+  - first:
+      213: -3664347552820767055
+    second: shop inventory_4
+  - first:
+      213: 7693108884428063148
+    second: shop inventory_5
+  - first:
+      213: -6379565813021220860
+    second: shop inventory_6
+  - first:
+      213: 5196222903834249258
+    second: shop inventory_7
+  - first:
+      213: -37450641608453507
+    second: shop inventory_8
+  - first:
+      213: -798517559019623961
+    second: shop inventory_9
+  - first:
+      213: 7345370190157911754
+    second: shop inventory_10
+  - first:
+      213: -890491290075099227
+    second: shop inventory_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: shop inventory_0
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 68
+        width: 1292
+        height: 954
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d74bdf1b4b3b77ee0800000000000000
+      internalID: -1263343581792455555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_1
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 709
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 578e752b8f13f2590800000000000000
+      internalID: -7696878293939132299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_2
+      rect:
+        serializedVersion: 2
+        x: 1114
+        y: 709
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eca016d43efef12c0800000000000000
+      internalID: -4458581346538681650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_3
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 709
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca2f6411a7406b3b0800000000000000
+      internalID: -5497201372836728148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_4
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 385
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b6db84b05f952dc0800000000000000
+      internalID: -3664347552820767055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_5
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 385
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca18cb245c963ca60800000000000000
+      internalID: 7693108884428063148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_6
+      rect:
+        serializedVersion: 2
+        x: 1114
+        y: 385
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 400e4a581ba3777a0800000000000000
+      internalID: -6379565813021220860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_7
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 385
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a280ac44331bc1840800000000000000
+      internalID: 5196222903834249258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_8
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 61
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d72515207d2fa7ff0800000000000000
+      internalID: -37450641608453507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_9
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 61
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e929b3c2881be4f0800000000000000
+      internalID: -798517559019623961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_10
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 61
+        width: 1286
+        height: 958
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac61b10454fffe560800000000000000
+      internalID: 7345370190157911754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shop inventory_11
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 61
+        width: 310
+        height: 313
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5af8e73c3e654a3f0800000000000000
+      internalID: -890491290075099227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: bc92c9151151de64db260dee386eaacf
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      shop inventory_0: -1263343581792455555
+      shop inventory_1: -7696878293939132299
+      shop inventory_10: 7345370190157911754
+      shop inventory_11: -890491290075099227
+      shop inventory_2: -4458581346538681650
+      shop inventory_3: -5497201372836728148
+      shop inventory_4: -3664347552820767055
+      shop inventory_5: 7693108884428063148
+      shop inventory_6: -6379565813021220860
+      shop inventory_7: 5196222903834249258
+      shop inventory_8: -37450641608453507
+      shop inventory_9: -798517559019623961
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
