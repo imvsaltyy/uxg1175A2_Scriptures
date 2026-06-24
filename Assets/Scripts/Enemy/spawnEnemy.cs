@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor;
+using UnityEditor.Profiling;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -19,7 +20,8 @@ public class spawnEnemy : MonoBehaviour
     [HideInInspector] public float damage;
     [HideInInspector] public float speed;
 
-     public float attackRange;
+     [HideInInspector] public float attackRange;
+    public List<GameObject> enemyDropPrefabs;
     //public float attackCooldown;
 
     [HideInInspector]
@@ -67,7 +69,7 @@ public class spawnEnemy : MonoBehaviour
         if (isAlive && DoT == null)
         {
             //Damage Over Time to emulate death
-            //DoT = StartCoroutine(damageOT());
+            DoT = StartCoroutine(damageOT());
         }
 
         if (distance <= attackRange && idleState && !attackState)
@@ -89,9 +91,8 @@ public class spawnEnemy : MonoBehaviour
             isAlive = !isAlive;
             isDead = !isDead;
 
-            //Debug.Log("Enemy Dead");
-            //Destroy(gameObject);
-            //enemyDead();
+            
+            enemyDead();
 
             StopAllCoroutines();
         }
@@ -262,7 +263,7 @@ public class spawnEnemy : MonoBehaviour
         while (isAlive)
         {
             yield return new WaitForSeconds(1f);
-            HP -= 10f;
+            HP -= 30f;
 
             Debug.Log(HP);
         }
@@ -273,5 +274,56 @@ public class spawnEnemy : MonoBehaviour
     {
         //Debug.Log("Basic Enemy Attack");
         
+    }
+
+    public void enemyDead()
+    {
+        enemyDrop();
+
+        Debug.Log("Enemy Dead");
+        Destroy(gameObject);
+
+        //Trigger Loot Spawn here
+    }
+
+    public void enemyDrop()
+    {
+        int random = UnityEngine.Random.Range(1,100);
+        bool lootDropped = false;
+
+        if (!lootDropped)
+        {
+            for (int i = 0; i < GameManager.enemyDrop.Length; i++)
+            {
+                string[] columns = GameManager.enemyDrop[i].Split(',');
+
+                if (random > int.Parse(columns[3]))
+                {
+                    lootDropped = true;
+                    Debug.Log("Dropped " + columns[0]);
+
+                    for (int j = 0; j < enemyDropPrefabs.Count; j++)
+                    {
+                        if (columns[0] == enemyDropPrefabs[j].gameObject.GetComponent<EnemyDrop>().toID)
+                        {
+                            GameObject droppedItem = Instantiate(enemyDropPrefabs[j].gameObject, transform.position, Quaternion.identity);
+                        }
+                    }
+
+                    break;
+                }
+
+                else
+                {
+                    continue;
+                }
+
+            }
+        }
+
+        if (!lootDropped)
+        {
+            Debug.Log("No loot was dropped");
+        }
     }
 }

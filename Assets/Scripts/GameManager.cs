@@ -21,12 +21,13 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public static string[] shopUpgrades;
 
-    public iInventory[] inventory;
+    [HideInInspector] public static string[] enemyDrop;
+    [HideInInspector] public static string[] lootBoxDrop;
 
-    public Canvas gameUI;
+    public static Canvas gameUI;
 
     //Game Management Area
-    GameObject[] activeEnemies;
+    private GameObject[] activeEnemies;
 
     void Awake()
     {
@@ -36,6 +37,9 @@ public class GameManager : MonoBehaviour
         weaponTypes = LoadExcelData("WeaponStatsTrial");
         playerStats = LoadExcelData("PlayerStatsTrial");
         shopUpgrades = LoadExcelData("ShopUpgradesTrial");
+
+        enemyDrop = LoadExcelData("EnemyLootDropTrial");
+        lootBoxDrop = LoadExcelData("LootBoxDropTrial");
     }
 
     void Start()
@@ -51,6 +55,8 @@ public class GameManager : MonoBehaviour
         //{
         //    Debug.Log("Enemy Found: " + activeEnemies[i].GetComponent<spawnEnemy>().id);
         //}
+
+        //InventoryManager.Instance.FindAll();
 
     }
 
