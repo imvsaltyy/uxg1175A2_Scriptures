@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
         //Check to ensure it is not friendly fire
         if (fireTag != collision.tag)
         {
-            Debug.Log("Dealing Damage");
+            //Debug.Log("Dealing Damage");
             Destroy(gameObject);
 
             if (collision.tag == "Player")
@@ -34,7 +34,9 @@ public class Bullet : MonoBehaviour
 
             else if (collision.tag == "Enemy")
             {
-                collision.gameObject.GetComponent<spawnEnemy>().HP -= damageDelt;   
+                collision.gameObject.GetComponent<spawnEnemy>().HP -= damageDelt;
+                //Debug.Log("Dealing Damage");
+
             }
 
         }

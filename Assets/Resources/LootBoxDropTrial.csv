@@ -1,0 +1,4 @@
+lootID,Category,sellValue,dropRate
+lego,lootBox,5,60
+duckie,lootBox,5,30
+teddyBear,lootBox,5,10
