@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: d3cf56fe20458134db4f11bc6421efe9
+guid: 28587ebe90f8eb64ab7aee4176eb8a88
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3186811392978946616
-    second: loot envi med_0
+      213: 8868729072188591806
+    second: duck_0
+  - first:
+      213: -8294748474342274760
+    second: duck_1
+  - first:
+      213: 8781019514964437993
+    second: duck_2
+  - first:
+      213: 7708609292541582763
+    second: duck_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 512
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loot envi med_0
+      name: duck_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 941
-        height: 637
+        x: 162
+        y: 1285
+        width: 563
+        height: 649
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 83a8da4d314d93c20800000000000000
-      internalID: 3186811392978946616
+      spriteID: ebe0bf44a1e041b70800000000000000
+      internalID: 8868729072188591806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: duck_1
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 570
+        width: 563
+        height: 648
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8398d95c53223ec80800000000000000
+      internalID: -8294748474342274760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: duck_2
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 562
+        width: 580
+        height: 648
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb6a3b99b27cd970800000000000000
+      internalID: 8781019514964437993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: duck_3
+      rect:
+        serializedVersion: 2
+        x: 1406
+        y: 562
+        width: 605
+        height: 648
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bad57324f4b7afa60800000000000000
+      internalID: 7708609292541582763
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      loot envi med_0: 3186811392978946616
+      duck_0: 8868729072188591806
+      duck_1: -8294748474342274760
+      duck_2: 8781019514964437993
+      duck_3: 7708609292541582763
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: d3cf56fe20458134db4f11bc6421efe9
+guid: 53ea05ea052d6a7469d3a587e22ece99
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3186811392978946616
-    second: loot envi med_0
+      213: 1333401826788945531
+    second: alien_0
+  - first:
+      213: -3445709363609947430
+    second: alien_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 512
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loot envi med_0
+      name: alien_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 941
-        height: 637
+        x: 511
+        y: 1232
+        width: 1017
+        height: 751
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 83a8da4d314d93c20800000000000000
-      internalID: 3186811392978946616
+      spriteID: b7eac9495e1318210800000000000000
+      internalID: 1333401826788945531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: alien_1
+      rect:
+        serializedVersion: 2
+        x: 498
+        y: 107
+        width: 1017
+        height: 751
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad2bac607916e20d0800000000000000
+      internalID: -3445709363609947430
       vertices: []
       indices: 
       edges: []
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      loot envi med_0: 3186811392978946616
+      alien_0: 1333401826788945531
+      alien_1: -3445709363609947430
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
