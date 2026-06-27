@@ -1549,8 +1549,8 @@ MonoBehaviour:
   characterdeath: {fileID: 8300000, guid: 15f5fff610e636f48acc8e31df539191, type: 3}
   characterdamaged: {fileID: 8300000, guid: 44d255b50b074c3478d8a252d37e0261, type: 3}
   charactershoot: {fileID: 8300000, guid: f667710ba4bc45a45bf994a29804b0d2, type: 3}
-  alienshoot: {fileID: 0}
-  duckshoot: {fileID: 0}
+  alienshoot: {fileID: 8300000, guid: f667710ba4bc45a45bf994a29804b0d2, type: 3}
+  duckshoot: {fileID: 8300000, guid: b650b4fdbed66204e94ef18ec565191d, type: 3}
   aliendeath: {fileID: 8300000, guid: a35a2b30b1cc77a499ef9d84311f3353, type: 3}
   duckdeath: {fileID: 8300000, guid: 27f121412c1f333499f09bfe5adb336c, type: 3}
   buttonpress: {fileID: 8300000, guid: 59b77f4687b28b24ea812301fbb65900, type: 3}
