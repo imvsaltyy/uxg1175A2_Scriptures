@@ -1,3 +1,2 @@
-EnemyId,variantId,baseHP,baseDamage,baseSpeed,attackRange,attackCD,detectionRange,lootTableID
-enemy_walker,normal,100,10,1.5,1.1,1.2,5,loot_basic_enemy
-enemy_shooter,normal,80,12,0.5,5,2,10,loot_ranged_enemy
+enemy_walker,normal,100.0,10.0,1.5,1.1,1.2,5.0,loot_basic_enemy,
+enemy_shooter,normal,80.0,12.0,0.5,5.0,2.0,10.0,loot_ranged_enemy,
