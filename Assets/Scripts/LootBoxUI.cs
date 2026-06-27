@@ -1,68 +1,75 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LootBoxUI : MonoBehaviour
 {
-    public GameObject inventoryLootUI;
     public Transform gridParent;
+    public inventoryUI inventoryUIPanel;
 
     public static GameObject assignedLoot;
-    private Image originalSlotImage;
+
+    private Sprite originalSprite;
     private Color originalColor;
 
-    public GameObject lootBoxButton;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        originalSlotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
-        originalColor = gridParent.transform.GetChild(0).GetComponent<Image>().color;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Image slot = gridParent.GetChild(0).GetComponent<Image>();
+        if (slot != null)
+        {
+            originalSprite = slot.sprite;
+            originalColor = slot.color;
+        }
     }
 
     private void OnEnable()
     {
+        Image slotImage = gridParent.GetChild(0).GetComponent<Image>();
+        if (slotImage == null) return;
+
         if (assignedLoot != null)
         {
-            Image slotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
-            Sprite toReplace = assignedLoot.GetComponent<Sprite>();
-
-            Color replaceColor = assignedLoot.GetComponent<SpriteRenderer>().color;
-
-            slotImage.sprite = toReplace;
-            slotImage.color = replaceColor;
-
+            SpriteRenderer sr = assignedLoot.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                slotImage.sprite = sr.sprite;
+                slotImage.color = sr.color;
+            }
+            else
+            {
+                Debug.LogWarning("assignedLoot has no SpriteRenderer: " + assignedLoot.name);
+            }
         }
-
         else
         {
-            Debug.Log("Item not found");
+            Debug.Log("No loot assigned to LootBoxUI.");
+            slotImage.sprite = originalSprite;
+            slotImage.color = originalColor;
         }
     }
 
+    // Called by the "Take" button in the loot box UI
     public void addIntoInventory()
     {
-        Debug.Log("Added item into inventory");
+        if (assignedLoot == null)
+        {
+            Debug.LogWarning("No loot to add.");
+            return;
+        }
 
         GameObject toBeAdded = Instantiate(assignedLoot, InventoryManager.Instance.transform);
-
         InventoryManager.Instance.AddItem(toBeAdded);
 
-        //Image slotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
+        Debug.Log("Added " + assignedLoot.name + " to inventory.");
 
-        //slotImage = originalSlotImage;
-        //slotImage.color = originalColor;
+        // Refresh inventory panel if open
+        if (inventoryUIPanel != null)
+            inventoryUIPanel.refreshInventory();
 
-        this.gameObject.GetComponent<Button>().interactable = false;
+        // Disable the take button so player can't take twice
+        Button btn = GetComponentInChildren<Button>();
+        if (btn != null) btn.interactable = false;
 
+        assignedLoot = null;
+        gameObject.SetActive(false);
     }
-
-
 }

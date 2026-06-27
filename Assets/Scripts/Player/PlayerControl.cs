@@ -13,6 +13,7 @@ public class PlayerControl : MonoBehaviour
 
     [Header("Rotation")]
     [SerializeField] private Transform playerSprite;
+    [SerializeField] private Transform weaponHolder;
     private float rotationSpeed;
 
     [Header("FOV")]
@@ -20,57 +21,156 @@ public class PlayerControl : MonoBehaviour
     private float viewDistance;
     private float viewAngle;
 
+    [Header("Weapon")]
+    private iWeapon currentWeapon;
+    private float nextTimeToFire;
+
     public bool canShootEnemy;
 
     private Camera mainCam;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         playerStats = GetComponent<PlayerStats>();
+
+        // PlayerStats already does statsAssignment in its own Start,
+        // but this keeps your current setup safe.
         playerStats.statsAssignment();
 
-        speed = playerStats.baseMoveSpeed;
+        speed = playerStats.FinalMoveSpeed;
         viewDistance = playerStats.vision;
         viewAngle = playerStats.fovAngle;
         rotationSpeed = playerStats.rotationSpeed;
 
         Debug.Log("Speed from CSV: " + speed);
 
-
         mainCam = Camera.main;
 
         moveAction = InputSystem.actions.FindAction("Move");
         attackAction = InputSystem.actions.FindAction("Attack");
         reloadAction = InputSystem.actions.FindAction("Reload");
-        //key down
-        attackAction.started += (x) =>
-        {
-            Debug.Log("started");
-        };
-        //called once
-        attackAction.performed += (x) =>
-        {
-            Debug.Log("perform");
-        };
-        //key up
-        attackAction.canceled += (x) =>
-        {
-            Debug.Log("canceled");
-        };
 
-        //reloadAction.started += (x) =>
-        //{
-        //    Debug.Log("reload");
-        //};
+        if (moveAction != null) moveAction.Enable();
+        if (attackAction != null) attackAction.Enable();
+        if (reloadAction != null) reloadAction.Enable();
+
+        SetupSelectedWeapon();
+
+        attackAction.started += OnAttackStarted;
+        //attackAction.performed += OnAttackPerformed;
+        //attackAction.canceled += OnAttackCanceled;
     }
-    // Update is called once per frame
+
+    private void OnDestroy()
+    {
+        if (attackAction != null)
+        {
+            attackAction.started -= OnAttackStarted;
+            //attackAction.performed -= OnAttackPerformed;
+            //attackAction.canceled -= OnAttackCanceled;
+        }
+    }
+
     private void Update()
     {
         MovePlayer();
         RotateToMouse();
         CheckEnemiesInFOV();
+    }
+
+    private void SetupSelectedWeapon()
+    {
+        if (weaponHolder == null)
+        {
+            Debug.LogError("Weapon holder is not assigned in PlayerControl.");
+            return;
+        }
+
+        string selectedWeaponID = "nerf_gun";
+
+        if (PlayerManager.Instance != null)
+        {
+            selectedWeaponID = PlayerManager.Instance.selectedWeaponID;
+        }
+
+        Debug.Log("Trying to equip weapon: " + selectedWeaponID);
+
+        iWeapon[] weapons = weaponHolder.GetComponentsInChildren<iWeapon>(true);
+
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            weapons[i].gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            bool isSelectedWeapon = false;
+
+            if (selectedWeaponID == "nerf_gun" && weapons[i] is nerfGun)
+            {
+                isSelectedWeapon = true;
+            }
+            else if (selectedWeaponID == "lazer_gun" && weapons[i] is lazerGun)
+            {
+                isSelectedWeapon = true;
+            }
+
+            if (isSelectedWeapon)
+            {
+                weapons[i].gameObject.SetActive(true);
+                currentWeapon = weapons[i];
+
+                currentWeapon.SetOwnerTag(gameObject.tag);
+
+                Debug.Log("Equipped weapon: " + selectedWeaponID);
+                return;
+            }
+        }
+
+        Debug.LogWarning("Selected weapon not found under weapon holder: " + selectedWeaponID);
+    }
+
+    private void OnAttackStarted(InputAction.CallbackContext context)
+    {
+        Debug.Log("Attack started");
+        Attack();
+    }
+
+    //private void OnAttackPerformed(InputAction.CallbackContext context)
+    //{
+    //    Attack();
+    //}
+
+    //private void OnAttackCanceled(InputAction.CallbackContext context)
+    //{
+    //    Debug.Log("Attack canceled");
+    //}
+
+    private void Attack()
+    {
+        if (currentWeapon == null)
+        {
+            Debug.LogWarning("No weapon equipped.");
+            return;
+        }
+
+        if (Time.time < nextTimeToFire)
+        {
+            return;
+        }
+
+        // If you only want player to shoot when enemy is inside FOV, uncomment this.
+        //if (!canShootEnemy)
+        //{
+        //    Debug.Log("No enemy in FOV. Cannot shoot.");
+        //    return;
+        //}
+
+        nextTimeToFire = Time.time + currentWeapon.fireRate;
+
+        currentWeapon.Fire(playerStats.FinalDamage);
+
+        Debug.Log("Player attacked with: " + currentWeapon.ID);
     }
 
     private void MovePlayer()
@@ -105,6 +205,15 @@ public class PlayerControl : MonoBehaviour
                 targetRotation,
                 rotationSpeed * Time.deltaTime
             );
+
+            if (weaponHolder != null && weaponHolder.parent != playerSprite)
+            {
+                weaponHolder.rotation = Quaternion.RotateTowards(
+                    weaponHolder.rotation,
+                    targetRotation,
+                    rotationSpeed * Time.deltaTime
+                );
+            }
         }
     }
 

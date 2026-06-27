@@ -4,13 +4,13 @@ public class EnemyDrop : iInventory
 {
     public string toID;
 
-    [HideInInspector] public GameObject toBeAddedItem;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         statsAssignment();
-        sprite = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+            sprite = sr.sprite;
     }
 
     void statsAssignment()
@@ -20,40 +20,33 @@ public class EnemyDrop : iInventory
         for (int i = 0; i < GameManager.enemyDrop.Length; i++)
         {
             string[] columns = GameManager.enemyDrop[i].Split(',');
+            if (columns.Length < 4) continue;
 
-            if (columns[0] == toID)
+            if (columns[0].Trim() == toID)
             {
-                assigned = true;
-
                 lootID = toID;
-                sellValue = float.Parse(columns[2]);
-                dropRate = float.Parse(columns[3]);
+                sellValue = float.Parse(columns[2].Trim());
+                dropRate = float.Parse(columns[3].Trim());
+                assigned = true;
+                break;
             }
         }
 
         if (!assigned)
         {
-            Debug.Log("Dropped item not found!");
+            Debug.LogWarning("EnemyDrop: item not found in CSV for ID: " + toID);
             Destroy(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag == "Player")
-        {
-            Debug.Log("Item is picked up by Payer");
-            //InventoryManager.Instance.AddItem(gameObject);
+        if (!collision.CompareTag("Player")) return;
 
-            toBeAddedItem = Instantiate(gameObject, InventoryManager.Instance.transform);
+        Debug.Log("Item picked up: " + lootID);
 
-            InventoryManager.Instance.AddItem(toBeAddedItem);   
-
-            Destroy(gameObject);
-
-        }
+        // Move this GameObject into InventoryManager and deactivate it there
+        transform.SetParent(InventoryManager.Instance.transform);
+        InventoryManager.Instance.AddItem(gameObject);
     }
-
-
-
 }

@@ -1,103 +1,87 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class lootBox : iInventory
 {
     private bool lootAssigned = false;
     public GameObject lootBoxUI;
-    public GameObject inventoryUI;
+    public GameObject inventoryUIObject;
 
     public GameObject[] lootBoxPrefabs;
     [HideInInspector] public GameObject assignedLoot;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        lootBoxDrop();
+        AssignLootBoxDrop();
     }
 
-    // Update is called once per frame
-    void Update()
+    void AssignLootBoxDrop()
     {
-
-    }
-
-    void lootBoxDrop()
-    {
-        int random = UnityEngine.Random.Range(1, 100);
-
-        if (!lootAssigned)
+        if (GameManager.lootBoxDrop == null || GameManager.lootBoxDrop.Length == 0)
         {
-            for (int i = 0; i < GameManager.lootBoxDrop.Length; i++)
+            Debug.LogWarning("LootBox drop table not loaded.");
+            return;
+        }
+
+        int random = Random.Range(1, 101);
+
+        for (int i = 0; i < GameManager.lootBoxDrop.Length; i++)
+        {
+            string[] columns = GameManager.lootBoxDrop[i].Split(',');
+            if (columns.Length < 4) continue;
+
+            int dropThreshold = int.Parse(columns[3].Trim());
+
+            if (random <= dropThreshold)
             {
-                string[] columns = GameManager.lootBoxDrop[i].Split(',');
-
-                if (random > int.Parse(columns[3]))
-                {
-
-                    lootAssigned = true;
-                    //Debug.Log("Random: " + random);
-                    //Debug.Log("Assigned Loot: " + columns[0]);
-
-                    lootID = columns[0];
-                    sellValue = float.Parse(columns[2]);
-                    dropRate = float.Parse(columns[3]);
-
-                    break;
-                }
-
-                else
-                {
-                    continue;
-                }
+                lootAssigned = true;
+                lootID = columns[0].Trim();
+                sellValue = float.Parse(columns[2].Trim());
+                dropRate = float.Parse(columns[3].Trim());
+                break;
             }
         }
 
         if (!lootAssigned)
         {
-            Debug.Log("Loot Box Drop not found");
+            Debug.Log("No loot assigned to loot box (rolled above all thresholds).");
+            return;
         }
 
-        if (lootID == null)
-        {
-            Debug.Log("Item if not assigned!");
-        }
-
+        // Find the prefab that matches the rolled loot ID
         for (int i = 0; i < lootBoxPrefabs.Length; i++)
         {
-
             if (lootBoxPrefabs[i].name == lootID)
             {
                 assignedLoot = lootBoxPrefabs[i];
-                Debug.Log("Loot Assigned: " + assignedLoot);
+                Debug.Log("LootBox assigned: " + assignedLoot.name);
+                return;
             }
         }
 
-        if (assignedLoot == null)
-        {
-            Debug.Log("Assigned Prefab not found!");
-        }
+        Debug.LogWarning("LootBox prefab not found for lootID: " + lootID);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag == "Player")
-        {
-            LootBoxUI.assignedLoot = assignedLoot;
-            lootBoxUI.gameObject.SetActive(true);
-            inventoryUI.gameObject.SetActive(true);
-            
-        }
+        if (!collision.CompareTag("Player")) return;
+
+        LootBoxUI.assignedLoot = assignedLoot;
+
+        if (lootBoxUI != null)
+            lootBoxUI.SetActive(true);
+
+        if (inventoryUIObject != null)
+            inventoryUIObject.SetActive(true);
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.transform.tag == "Player")
-        {
-            lootBoxUI.gameObject.SetActive(false);
-            inventoryUI.gameObject.SetActive(false);
-        }
+        if (!collision.CompareTag("Player")) return;
+
+        if (lootBoxUI != null)
+            lootBoxUI.SetActive(false);
+
+        if (inventoryUIObject != null)
+            inventoryUIObject.SetActive(false);
     }
-
-
 }

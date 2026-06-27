@@ -23,11 +23,11 @@ public class lazerGun : iWeapon
         
     }
 
-    public void Fire(float damage)
+    public override void Fire(float damage)
     {
         GameObject lazer = Instantiate(lazerPrefab, firePoint.position, firePoint.rotation);
         lazer.GetComponent<Lazer>().lazerSpeed = damageSpeed;
-        lazer.GetComponent<Lazer>().fireTag = transform.parent.tag;
+        lazer.GetComponent<Lazer>().fireTag = transform.root.tag;
 
         lazer.GetComponent<Lazer>().damageDelt = damage * dmgMultiplier;
         lazer.GetComponent<Lazer>().maxLength = raySize;

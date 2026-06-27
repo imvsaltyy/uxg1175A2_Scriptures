@@ -8,38 +8,34 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, 5);
-
+        Destroy(gameObject, 5f);
     }
 
     private void FixedUpdate()
     {
         transform.Translate(Vector2.up * bulletSpeed * Time.deltaTime);
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Check to ensure it is not friendly fire
-        if (fireTag != collision.tag)
+        // Ignore the shooter's own tag AND ignore other bullets/projectiles
+        if (string.IsNullOrEmpty(fireTag)) return;
+        if (collision.CompareTag(fireTag)) return;
+        if (collision.isTrigger) return;  // Don't hit other trigger colliders (detection ranges etc)
+
+        Debug.Log("Bullet hit: " + collision.name + " tag: " + collision.tag);
+
+        if (collision.CompareTag("Player"))
         {
-            //Debug.Log("Dealing Damage");
-            Destroy(gameObject);
-
-            if (collision.tag == "Player")
-            {
-                //
-                collision.gameObject.GetComponent<PlayerStats>().baseHP -= damageDelt;
-            }
-
-            else if (collision.tag == "Enemy")
-            {
-                collision.gameObject.GetComponent<spawnEnemy>().HP -= damageDelt;
-                //Debug.Log("Dealing Damage");
-
-            }
-
+            PlayerStats ps = collision.GetComponent<PlayerStats>();
+            if (ps != null) ps.TakeDamage(damageDelt);
+        }
+        else if (collision.CompareTag("Enemy"))
+        {
+            spawnEnemy enemy = collision.GetComponent<spawnEnemy>();
+            if (enemy != null) enemy.HP -= damageDelt;
         }
 
+        Destroy(gameObject);
     }
 }
