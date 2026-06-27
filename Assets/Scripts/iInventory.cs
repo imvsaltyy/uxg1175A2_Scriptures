@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class iInventory : MonoBehaviour
 {
-    //Insert somthing here, to be combined with the Inventory System
-
     [HideInInspector] public string lootID;
-    [HideInInspector] public float sellValue;
+    [HideInInspector] public string rarity;   // "Common", "Uncommon", "Rare", "Epic", "Legendary"
+    [HideInInspector] public float sellValue; // base sell value from CSV
     [HideInInspector] public float dropRate;
     [HideInInspector] public Sprite sprite;
 
-    //public int quantity;
-
+    /// Final sell value after applying rarity multiplier
+    public float FinalSellValue
+    {
+        get
+        {
+            float mult = GameManager.GetRarityMultiplier(rarity);
+            return sellValue * mult;
+        }
+    }
 }

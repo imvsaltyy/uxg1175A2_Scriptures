@@ -2,58 +2,60 @@ using UnityEngine;
 
 public class EnemyDrop : iInventory
 {
+    // Set this in the prefab Inspector to match the lootID in EnemyLootDropTrial.csv
     public string toID;
 
-    [HideInInspector] public GameObject toBeAddedItem;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         statsAssignment();
-        sprite = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sprite = sr.sprite;
     }
 
     void statsAssignment()
     {
+        if (GameManager.enemyDrop == null || GameManager.enemyDrop.Length == 0)
+        {
+            Debug.LogError("EnemyDrop: enemyDrop CSV not loaded!");
+            return;
+        }
+
         bool assigned = false;
 
         for (int i = 0; i < GameManager.enemyDrop.Length; i++)
         {
-            string[] columns = GameManager.enemyDrop[i].Split(',');
+            string[] cols = GameManager.enemyDrop[i].Split(',');
+            if (cols.Length < 4) continue;
 
-            if (columns[0] == toID)
+            if (cols[0].Trim() == toID.Trim())
             {
+                lootID = cols[0].Trim();
+                // col[1] = Category (EnemyDrop) — not needed at runtime
+                sellValue = float.Parse(cols[2].Trim());
+                dropRate = float.Parse(cols[3].Trim());
+                rarity = "Common"; // enemy drops are always Common rarity
                 assigned = true;
-
-                lootID = toID;
-                sellValue = float.Parse(columns[2]);
-                dropRate = float.Parse(columns[3]);
+                Debug.Log("EnemyDrop stats assigned: " + lootID);
+                break;
             }
         }
 
         if (!assigned)
         {
-            Debug.Log("Dropped item not found!");
+            Debug.LogWarning("EnemyDrop: ID not found in CSV: " + toID);
             Destroy(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag == "Player")
-        {
-            Debug.Log("Item is picked up by Payer");
-            //InventoryManager.Instance.AddItem(gameObject);
+        if (!collision.CompareTag("Player")) return;
 
-            toBeAddedItem = Instantiate(gameObject, InventoryManager.Instance.transform);
+        Debug.Log("Item picked up: " + lootID);
 
-            InventoryManager.Instance.AddItem(toBeAddedItem);   
-
-            Destroy(gameObject);
-
-        }
+        // Re-parent into InventoryManager and deactivate (AddItem handles SetActive(false))
+        transform.SetParent(InventoryManager.Instance.transform);
+        InventoryManager.Instance.AddItem(gameObject);
     }
-
-
-
 }

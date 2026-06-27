@@ -1,68 +1,94 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LootBoxUI : MonoBehaviour
 {
-    public GameObject inventoryLootUI;
     public Transform gridParent;
+    public inventoryUI inventoryUIPanel;
+    public Text rarityText;    // assign in Inspector to show rarity label
+    public Text sellValueText; // assign in Inspector to show sell value
 
+    // Set by lootBox.cs before this panel activates
     public static GameObject assignedLoot;
-    private Image originalSlotImage;
+    public static string assignedRarity = "Common";
+    public static float assignedSellValue = 0f;
+
+    private Sprite originalSprite;
     private Color originalColor;
 
-    public GameObject lootBoxButton;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        originalSlotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
-        originalColor = gridParent.transform.GetChild(0).GetComponent<Image>().color;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Image slot = gridParent.GetChild(0).GetComponent<Image>();
+        if (slot != null)
+        {
+            originalSprite = slot.sprite;
+            originalColor = slot.color;
+        }
     }
 
     private void OnEnable()
     {
-        if (assignedLoot != null)
-        {
-            Image slotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
-            Sprite toReplace = assignedLoot.GetComponent<Sprite>();
-
-            Color replaceColor = assignedLoot.GetComponent<SpriteRenderer>().color;
-
-            slotImage.sprite = toReplace;
-            slotImage.color = replaceColor;
-
-        }
-
-        else
-        {
-            Debug.Log("Item not found");
-        }
+        RefreshUI();
     }
 
-    public void addIntoInventory()
+    void RefreshUI()
     {
-        Debug.Log("Added item into inventory");
+        Image slotImage = gridParent.GetChild(0).GetComponent<Image>();
+        if (slotImage == null) return;
+
+        if (assignedLoot != null)
+        {
+            SpriteRenderer sr = assignedLoot.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                slotImage.sprite = sr.sprite;
+                slotImage.color = sr.color;
+            }
+        }
+        else
+        {
+            slotImage.sprite = originalSprite;
+            slotImage.color = originalColor;
+        }
+
+        // Update optional rarity and sell value labels
+        if (rarityText != null)
+            rarityText.text = assignedRarity;
+
+        if (sellValueText != null)
+            sellValueText.text = "Sell: $" + assignedSellValue.ToString("F0");
+    }
+
+    // Wired to "Take" button in Inspector
+    public void AddIntoInventory()
+    {
+        if (assignedLoot == null)
+        {
+            Debug.LogWarning("LootBoxUI: No loot to add.");
+            return;
+        }
 
         GameObject toBeAdded = Instantiate(assignedLoot, InventoryManager.Instance.transform);
 
+        // Carry rarity and final sell value onto the inventory item
+        iInventory inv = toBeAdded.GetComponent<iInventory>();
+        if (inv != null)
+        {
+            inv.rarity = assignedRarity;
+            inv.sellValue = assignedSellValue; // already has multiplier applied
+        }
+
         InventoryManager.Instance.AddItem(toBeAdded);
+        Debug.Log("Added " + assignedLoot.name + " [" + assignedRarity + "] to inventory.");
 
-        //Image slotImage = gridParent.transform.GetChild(0).GetComponent<Image>();
+        if (inventoryUIPanel != null)
+            inventoryUIPanel.refreshInventory();
 
-        //slotImage = originalSlotImage;
-        //slotImage.color = originalColor;
+        // Disable take button so player can't take twice from same box
+        Button btn = GetComponentInChildren<Button>();
+        if (btn != null) btn.interactable = false;
 
-        this.gameObject.GetComponent<Button>().interactable = false;
-
+        assignedLoot = null;
+        gameObject.SetActive(false);
     }
-
-
 }

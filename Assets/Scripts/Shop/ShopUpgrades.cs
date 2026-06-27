@@ -17,20 +17,19 @@ public class ShopUpgrades : MonoBehaviour
     [Header("Purchase State")]
     public bool isPurchased;
 
-    // TEMPORARY HARDCODED CURRENCY
-    public static int playerCurrency = 100;
+    // Kept for PlayerStats to read from — populated by PlayerManager
     public static List<string> purchasedUpgradeIDs = new List<string>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         statsAssignment();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Sync static list from PlayerManager on scene load
+        if (PlayerManager.Instance != null)
+            purchasedUpgradeIDs = PlayerManager.Instance.ownedUpgradeIDs;
+
+        // Reflect already-purchased state in the UI
+        isPurchased = purchasedUpgradeIDs.Contains(shopUpgradeID);
     }
 
     private void statsAssignment()
@@ -41,48 +40,52 @@ public class ShopUpgrades : MonoBehaviour
         {
             string[] columns = GameManager.shopUpgrades[i].Split(',');
 
-            if (columns[0] == shopUpgradeID)
+            if (columns[0].Trim() == shopUpgradeID)
             {
-                shopUpgradeID = columns[0];
-                upgradeName = columns[1];
-                description = columns[2];
-                statType = columns[3];
-
-                value = float.Parse(columns[4]);
-                cost = int.Parse(columns[5]);
-                isOneTime = bool.Parse(columns[6]);
+                shopUpgradeID = columns[0].Trim();
+                upgradeName = columns[1].Trim();
+                description = columns[2].Trim();
+                statType = columns[3].Trim();
+                value = float.Parse(columns[4].Trim());
+                cost = int.Parse(columns[5].Trim());
+                isOneTime = bool.Parse(columns[6].Trim());
 
                 assigned = true;
-
                 Debug.Log(upgradeName + " shop upgrade assigned");
                 break;
             }
         }
 
         if (!assigned)
-        {
             Debug.LogWarning("Shop upgrade ID not found: " + shopUpgradeID);
-        }
     }
 
     public void BuyUpgrade()
     {
-        if (isOneTime && purchasedUpgradeIDs.Contains(shopUpgradeID))
+        if (PlayerManager.Instance == null)
+        {
+            Debug.LogError("PlayerManager not found!");
+            return;
+        }
+
+        if (isOneTime && PlayerManager.Instance.ownedUpgradeIDs.Contains(shopUpgradeID))
         {
             Debug.Log("Already purchased: " + upgradeName);
             return;
         }
 
-        if (playerCurrency < cost)
+        bool success = PlayerManager.Instance.BuyUpgrade(shopUpgradeID, cost);
+
+        if (success)
         {
-            Debug.Log("Not enough currency. Current currency: " + playerCurrency);
-            return;
+            isPurchased = true;
+            // Keep static list in sync so PlayerStats can read it
+            purchasedUpgradeIDs = PlayerManager.Instance.ownedUpgradeIDs;
+            Debug.Log("Purchased: " + upgradeName);
         }
-
-        playerCurrency -= cost;
-        purchasedUpgradeIDs.Add(shopUpgradeID);
-
-        Debug.Log("Purchased: " + upgradeName);
-        Debug.Log("Remaining currency: " + playerCurrency);
+        else
+        {
+            Debug.Log("Not enough currency to buy: " + upgradeName);
+        }
     }
 }

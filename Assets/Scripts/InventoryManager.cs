@@ -14,7 +14,6 @@ public class InventoryManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
         else
         {
             Destroy(gameObject);
@@ -25,19 +24,29 @@ public class InventoryManager : MonoBehaviour
     {
         inventory.Add(item);
         item.SetActive(false);
-        //Debug.Log(item.GetComponent<iInventory>().lootID + " added");
-
-        Debug.Log(item);
+        Debug.Log("Added to inventory: " + item.name);
     }
 
     public void RemoveItem(GameObject item)
     {
         inventory.Remove(item);
         Destroy(item);
+        Debug.Log("Removed from inventory: " + item.name);
     }
 
-    public void FindAll()
+    // Call this when the player dies — wipe everything
+    public void ClearInventory()
     {
-        Debug.Log("Inventory Count: " + inventory.Count);
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            Destroy(inventory[i]);
+        }
+        inventory.Clear();
+        Debug.Log("Inventory cleared (player died).");
+    }
+
+    public int GetCount()
+    {
+        return inventory.Count;
     }
 }
