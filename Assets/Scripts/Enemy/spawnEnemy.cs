@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +29,6 @@ public class spawnEnemy : MonoBehaviour
 
     public float distance;
     [HideInInspector] public GameObject player;
-
     public Coroutine Atk;
     #endregion
 
@@ -46,10 +44,8 @@ public class spawnEnemy : MonoBehaviour
             speed *= LevelManager.Instance.enemySpeedMultiplier;
         }
 
-        // The CircleCollider2D is the detection trigger — set its radius
         CircleCollider2D circle = GetComponent<CircleCollider2D>();
-        if (circle != null)
-            circle.radius = detectionRange;
+        if (circle != null) circle.radius = detectionRange;
     }
 
     protected virtual void Update()
@@ -58,7 +54,6 @@ public class spawnEnemy : MonoBehaviour
 
         distance = Vector2.Distance(transform.position, player.transform.position);
 
-        // Enter attack range
         if (distance <= attackRange && idleState && !attackState)
         {
             idleState = false;
@@ -66,7 +61,6 @@ public class spawnEnemy : MonoBehaviour
             attackState = true;
         }
 
-        // Lost player — back to idle
         if (distance > detectionRange && !idleState)
         {
             idleState = true;
@@ -74,7 +68,6 @@ public class spawnEnemy : MonoBehaviour
             attackState = false;
         }
 
-        // Death check
         if (HP <= 0 && isAlive)
         {
             isAlive = false;
@@ -84,11 +77,8 @@ public class spawnEnemy : MonoBehaviour
             return;
         }
 
-        if (chasedState && !idleState && !attackState)
-            playerChase();
-
-        if (attackState && !chasedState && Atk == null)
-            enemyAttack();
+        if (chasedState && !idleState && !attackState) playerChase();
+        if (attackState && !chasedState && Atk == null) enemyAttack();
     }
 
     void statsAssignment()
@@ -97,22 +87,21 @@ public class spawnEnemy : MonoBehaviour
 
         for (int i = 0; i < GameManager.enemyType.Length; i++)
         {
-            string[] columns = GameManager.enemyType[i].Split(',');
-            if (columns.Length < 9) continue;
+            string[] cols = GameManager.enemyType[i].Split(',');
+            if (cols.Length < 9) continue;
 
-            if (columns[0].Trim() == enemyTypeName)
+            if (cols[0].Trim() == enemyTypeName)
             {
-                ID = columns[0].Trim();
-                variantID = columns[1].Trim();
-                HP = float.Parse(columns[2].Trim());
-                damage = float.Parse(columns[3].Trim());
-                speed = float.Parse(columns[4].Trim());
-                attackRange = float.Parse(columns[5].Trim());
-                detectionRange = float.Parse(columns[7].Trim());
-                lootTableID = columns[8].Trim();
-
+                ID = cols[0].Trim();
+                variantID = cols[1].Trim();
+                HP = float.Parse(cols[2].Trim());
+                damage = float.Parse(cols[3].Trim());
+                speed = float.Parse(cols[4].Trim());
+                attackRange = float.Parse(cols[5].Trim());
+                detectionRange = float.Parse(cols[7].Trim());
+                lootTableID = cols[8].Trim();
                 assigned = true;
-                Debug.Log(ID + " enemy stats assigned. HP=" + HP + " dmg=" + damage + " spd=" + speed);
+                Debug.Log(ID + " stats assigned. HP=" + HP + " dmg=" + damage);
                 break;
             }
         }
@@ -180,38 +169,55 @@ public class spawnEnemy : MonoBehaviour
 
     public void enemyDrop()
     {
-        if (GameManager.enemyDrop == null || enemyDropPrefabs == null || enemyDropPrefabs.Count == 0)
+        if (GameManager.enemyDrop == null || GameManager.enemyDrop.Length == 0)
+        {
+            Debug.LogWarning("enemyDrop CSV is empty or not loaded.");
             return;
+        }
 
-        // dropRate in CSV is a fraction (0.0–1.0), so roll a 0–1 float
-        float roll = Random.value;
+        if (enemyDropPrefabs == null || enemyDropPrefabs.Count == 0)
+        {
+            Debug.LogWarning(ID + ": no enemyDropPrefabs assigned in Inspector.");
+            return;
+        }
+
+        // dropRate in EnemyLootDropTrial is a fraction 0.0-1.0 (e.g. Heart=0.2, Star=1.0)
+        // Roll a random float and check each item independently (items are not mutually exclusive)
+        bool anyDropped = false;
 
         for (int i = 0; i < GameManager.enemyDrop.Length; i++)
         {
-            string[] columns = GameManager.enemyDrop[i].Split(',');
-            if (columns.Length < 4) continue;
+            string[] cols = GameManager.enemyDrop[i].Split(',');
+            if (cols.Length < 4) continue;
+
+            string dropID = cols[0].Trim();
 
             float dropRate;
-            if (!float.TryParse(columns[3].Trim(), out dropRate)) continue;
+            if (!float.TryParse(cols[3].Trim(), out dropRate)) continue;
+
+            float roll = Random.value; // 0.0 to 1.0
+            Debug.Log(ID + " drop roll for " + dropID + ": " + roll + " vs rate " + dropRate);
 
             if (roll <= dropRate)
             {
-                string dropID = columns[0].Trim();
-                Debug.Log("Dropped: " + dropID + " (roll=" + roll + " rate=" + dropRate + ")");
-
+                // Find the matching prefab
                 for (int j = 0; j < enemyDropPrefabs.Count; j++)
                 {
+                    if (enemyDropPrefabs[j] == null) continue;
+
                     EnemyDrop dropComp = enemyDropPrefabs[j].GetComponent<EnemyDrop>();
-                    if (dropComp != null && dropComp.toID == dropID)
+                    if (dropComp != null && dropComp.toID.Trim() == dropID)
                     {
                         Instantiate(enemyDropPrefabs[j], transform.position, Quaternion.identity);
+                        Debug.Log(ID + " dropped: " + dropID);
+                        anyDropped = true;
                         break;
                     }
                 }
-                return;
             }
         }
 
-        Debug.Log("No loot dropped (roll=" + roll + ")");
+        if (!anyDropped)
+            Debug.Log(ID + ": no loot dropped this time.");
     }
 }

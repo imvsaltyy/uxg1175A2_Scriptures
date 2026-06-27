@@ -2,63 +2,145 @@ using UnityEngine;
 
 public class lootBox : iInventory
 {
-    private bool lootAssigned = false;
-    public GameObject lootBoxUI;
+    public GameObject lootBoxUIObject;
     public GameObject inventoryUIObject;
-
     public GameObject[] lootBoxPrefabs;
+
     [HideInInspector] public GameObject assignedLoot;
+
+    // Rolled rarity name for this box (e.g. "Common", "Legendary")
+    private string rolledRarity = "Common";
 
     void Start()
     {
-        AssignLootBoxDrop();
+        RollLootBoxContents();
     }
 
-    void AssignLootBoxDrop()
+    void RollLootBoxContents()
     {
-        if (GameManager.lootBoxDrop == null || GameManager.lootBoxDrop.Length == 0)
+        // --- Step 1: Roll rarity using LootBoxRarityTrial.csv ---
+        // Columns: [0]=rarityID, [1]=rarityName, [2]=spawnRate%
+        // spawnRate is a percentage out of 100, so we use a 0-100 roll
+        rolledRarity = RollRarity();
+
+        // --- Step 2: Pick a loot item from LootBoxDropTrial.csv ---
+        // Columns: [0]=lootID, [1]=category, [2]=sellValue, [3]=dropRate (out of 100)
+        // dropRate is stored as a percentage (25, 15, 10 etc.) — roll 0-100
+        string pickedLootID = RollLootItem(rolledRarity);
+
+        if (pickedLootID == null)
         {
-            Debug.LogWarning("LootBox drop table not loaded.");
+            Debug.LogWarning("LootBox: No loot item was rolled.");
             return;
         }
 
-        int random = Random.Range(1, 101);
+        lootID = pickedLootID;
+        rarity = rolledRarity;
 
+        // Find base sell value from the loot table
         for (int i = 0; i < GameManager.lootBoxDrop.Length; i++)
         {
-            string[] columns = GameManager.lootBoxDrop[i].Split(',');
-            if (columns.Length < 4) continue;
-
-            int dropThreshold = int.Parse(columns[3].Trim());
-
-            if (random <= dropThreshold)
+            string[] cols = GameManager.lootBoxDrop[i].Split(',');
+            if (cols.Length < 4) continue;
+            if (cols[0].Trim() == lootID)
             {
-                lootAssigned = true;
-                lootID = columns[0].Trim();
-                sellValue = float.Parse(columns[2].Trim());
-                dropRate = float.Parse(columns[3].Trim());
+                sellValue = float.Parse(cols[2].Trim());
                 break;
             }
         }
 
-        if (!lootAssigned)
-        {
-            Debug.Log("No loot assigned to loot box (rolled above all thresholds).");
-            return;
-        }
-
-        // Find the prefab that matches the rolled loot ID
+        // --- Step 3: Match to a prefab ---
         for (int i = 0; i < lootBoxPrefabs.Length; i++)
         {
             if (lootBoxPrefabs[i].name == lootID)
             {
                 assignedLoot = lootBoxPrefabs[i];
-                Debug.Log("LootBox assigned: " + assignedLoot.name);
+                Debug.Log("LootBox assigned: " + lootID + " [" + rolledRarity + "] SellValue=" + FinalSellValue);
                 return;
             }
         }
 
-        Debug.LogWarning("LootBox prefab not found for lootID: " + lootID);
+        Debug.LogWarning("LootBox: prefab not found for lootID: " + lootID);
+    }
+
+    string RollRarity()
+    {
+        if (GameManager.lootBoxRarity == null || GameManager.lootBoxRarity.Length == 0)
+            return "Common";
+
+        // Get multipliers for this level's type if LevelManager exists
+        float[] mults = null;
+        if (LevelManager.Instance != null)
+            mults = GameManager.GetLootBoxMultipliers(LevelManager.Instance.lootboxRatesMultiplierID);
+
+        // Build weighted table
+        // Rarity order in multiplier CSV columns [4..8]: Common, Uncommon, Rare, Epic, Legendary
+        string[] rarityNames = { "Common", "Uncommon", "Rare", "Epic", "Legendary" };
+        float total = 0f;
+        float[] weights = new float[GameManager.lootBoxRarity.Length];
+
+        for (int i = 0; i < GameManager.lootBoxRarity.Length; i++)
+        {
+            string[] cols = GameManager.lootBoxRarity[i].Split(',');
+            if (cols.Length < 3) continue;
+
+            float baseRate = float.Parse(cols[2].Trim());
+            float mult = (mults != null && i < mults.Length) ? mults[4 + i] : 1f; // cols [4..8] = rarity mults
+            weights[i] = baseRate * mult;
+            total += weights[i];
+        }
+
+        float roll = Random.Range(0f, total);
+        float cumulative = 0f;
+
+        for (int i = 0; i < GameManager.lootBoxRarity.Length; i++)
+        {
+            string[] cols = GameManager.lootBoxRarity[i].Split(',');
+            if (cols.Length < 3) continue;
+
+            cumulative += weights[i];
+            if (roll <= cumulative)
+            {
+                string name = cols[1].Trim(); // "Common", "Uncommon", etc.
+                Debug.Log("Rolled rarity: " + name + " (roll=" + roll + "/" + total + ")");
+                return name;
+            }
+        }
+
+        return "Common";
+    }
+
+    string RollLootItem(string rarityName)
+    {
+        if (GameManager.lootBoxDrop == null || GameManager.lootBoxDrop.Length == 0)
+            return null;
+
+        // dropRate column is out of 100 — build weighted table
+        float total = 0f;
+        float[] weights = new float[GameManager.lootBoxDrop.Length];
+
+        for (int i = 0; i < GameManager.lootBoxDrop.Length; i++)
+        {
+            string[] cols = GameManager.lootBoxDrop[i].Split(',');
+            if (cols.Length < 4) continue;
+            float.TryParse(cols[3].Trim(), out weights[i]);
+            total += weights[i];
+        }
+
+        float roll = Random.Range(0f, total);
+        float cumulative = 0f;
+
+        for (int i = 0; i < GameManager.lootBoxDrop.Length; i++)
+        {
+            string[] cols = GameManager.lootBoxDrop[i].Split(',');
+            if (cols.Length < 4) continue;
+
+            cumulative += weights[i];
+            if (roll <= cumulative)
+                return cols[0].Trim();
+        }
+
+        return null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -66,22 +148,18 @@ public class lootBox : iInventory
         if (!collision.CompareTag("Player")) return;
 
         LootBoxUI.assignedLoot = assignedLoot;
+        LootBoxUI.assignedRarity = rolledRarity;
+        LootBoxUI.assignedSellValue = FinalSellValue;
 
-        if (lootBoxUI != null)
-            lootBoxUI.SetActive(true);
-
-        if (inventoryUIObject != null)
-            inventoryUIObject.SetActive(true);
+        if (lootBoxUIObject != null) lootBoxUIObject.SetActive(true);
+        if (inventoryUIObject != null) inventoryUIObject.SetActive(true);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
 
-        if (lootBoxUI != null)
-            lootBoxUI.SetActive(false);
-
-        if (inventoryUIObject != null)
-            inventoryUIObject.SetActive(false);
+        if (lootBoxUIObject != null) lootBoxUIObject.SetActive(false);
+        if (inventoryUIObject != null) inventoryUIObject.SetActive(false);
     }
 }

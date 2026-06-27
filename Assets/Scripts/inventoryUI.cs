@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class inventoryUI : MonoBehaviour
 {
-    public GameObject inventoryLootUI;
     public Transform gridParent;
 
     private void OnEnable()
@@ -11,7 +10,6 @@ public class inventoryUI : MonoBehaviour
         refreshInventory();
     }
 
-    // Called by a button to show/hide this panel
     public void displayInventory()
     {
         bool isCurrentlyActive = gameObject.activeSelf;
@@ -30,7 +28,8 @@ public class inventoryUI : MonoBehaviour
 
         for (int i = 0; i < slotCount; i++)
         {
-            Image slotImage = gridParent.GetChild(i).GetComponent<Image>();
+            Transform slot = gridParent.GetChild(i);
+            Image slotImage = slot.GetComponent<Image>();
             if (slotImage == null) continue;
 
             if (i < itemCount)
@@ -43,17 +42,30 @@ public class inventoryUI : MonoBehaviour
                     slotImage.sprite = sr.sprite;
                     slotImage.color = sr.color;
                 }
+
+                // Show sell value on the slot if there's a Text child
+                Text sellLabel = slot.GetComponentInChildren<Text>();
+                if (sellLabel != null)
+                {
+                    iInventory inv = item.GetComponent<iInventory>();
+                    if (inv != null)
+                        sellLabel.text = "$" + inv.FinalSellValue.ToString("F0");
+                }
             }
             else
             {
-                // Clear empty slots
+                // Empty slot — clear it
                 slotImage.sprite = null;
                 slotImage.color = new Color(1f, 1f, 1f, 0.2f);
+
+                Text sellLabel = slot.GetComponentInChildren<Text>();
+                if (sellLabel != null) sellLabel.text = "";
             }
         }
     }
 
-    // Called by a UI button on each inventory slot to sell that item
+    // Wire this to a Sell button on each inventory slot.
+    // Pass the slot index via the Button's OnClick event in the Inspector.
     public void SellItem(int slotIndex)
     {
         if (InventoryManager.Instance == null) return;
@@ -61,15 +73,14 @@ public class inventoryUI : MonoBehaviour
 
         GameObject item = InventoryManager.Instance.inventory[slotIndex];
         iInventory itemData = item.GetComponent<iInventory>();
-
         if (itemData == null) return;
 
-        int sellAmount = Mathf.FloorToInt(itemData.sellValue);
+        int sellAmount = Mathf.FloorToInt(itemData.FinalSellValue);
 
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.AddCurrency(sellAmount);
 
-        Debug.Log("Sold " + itemData.lootID + " for " + sellAmount + " currency.");
+        Debug.Log("Sold " + itemData.lootID + " [" + itemData.rarity + "] for $" + sellAmount);
 
         InventoryManager.Instance.RemoveItem(item);
         refreshInventory();
