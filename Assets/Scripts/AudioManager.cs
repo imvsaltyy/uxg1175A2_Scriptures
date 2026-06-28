@@ -18,6 +18,20 @@ public class AudioManager : MonoBehaviour
     public AudioClip duckdeath;
     public AudioClip buttonpress;
 
+    public static AudioManager Instance;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
     private void Start()
     {
         musicsource.clip = mainmenubackground;
@@ -30,4 +44,5 @@ public class AudioManager : MonoBehaviour
     {
         SFXsource.PlayOneShot(clip);
     }
+
 }

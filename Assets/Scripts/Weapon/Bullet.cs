@@ -5,16 +5,23 @@ public class Bullet : MonoBehaviour
     public float bulletSpeed = 1f;
     public string fireTag = "";
     public float damageDelt;
-    private AudioManager audioManager;
+    AudioManager audioManager;
+
 
     private void Start()
     {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
         Destroy(gameObject, 5);
         audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 =======
         Destroy(gameObject, 5f);
 >>>>>>> 068a08e0afaee0f2f66cde3070512ac5cb1e89c9
+=======
+        Destroy(gameObject, 5f);
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+
+>>>>>>> Stashed changes
     }
 
     private void FixedUpdate()
@@ -24,30 +31,24 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
         // Check to ensure it is not friendly fire
         if (fireTag != collision.tag)
-        {
-            // Destroy bullet on hit
-            Destroy(gameObject);
-
-            if (collision.tag == "Player")
-            {
-                // Deal damage
-                collision.gameObject.GetComponent<PlayerStats>().baseHP -= damageDelt;
-
-                // Play alienshoot sound
-                if (audioManager != null)
-                {
-                    audioManager.PlaySFX(audioManager.alienshoot);
-                }
-            }
-            else if (collision.tag == "Enemy")
-            {
-                collision.gameObject.GetComponent<spawnEnemy>().HP -= damageDelt;
-            }
-        }
 =======
+        // If bullet hits wall, destroy immediately
+        if (collision.CompareTag("Wall"))
+>>>>>>> Stashed changes
+        {
+            Destroy(gameObject);
+            return;
+        }
+<<<<<<< Updated upstream
+=======
+=======
+
+
+>>>>>>> Stashed changes
         // Ignore the shooter's own tag AND ignore other bullets/projectiles
         if (string.IsNullOrEmpty(fireTag)) return;
         if (collision.CompareTag(fireTag)) return;
@@ -59,6 +60,11 @@ public class Bullet : MonoBehaviour
         {
             PlayerStats ps = collision.GetComponent<PlayerStats>();
             if (ps != null) ps.TakeDamage(damageDelt);
+<<<<<<< Updated upstream
+=======
+
+            audioManager.PlaySFX(audioManager.characterdamaged);
+>>>>>>> Stashed changes
         }
         else if (collision.CompareTag("Enemy"))
         {
@@ -67,6 +73,9 @@ public class Bullet : MonoBehaviour
         }
 
         Destroy(gameObject);
+<<<<<<< Updated upstream
 >>>>>>> 068a08e0afaee0f2f66cde3070512ac5cb1e89c9
+=======
+>>>>>>> Stashed changes
     }
 }

@@ -1,3 +1,2 @@
-lootID,Category,sellValue,dropRate
-glitter,enemy,5,50
-oldCoin,enemy,5,0
+Heart,EnemyDrop,0.0,0.2,tbc,tbc
+Star,EnemyDrop,2.0,1.0,,

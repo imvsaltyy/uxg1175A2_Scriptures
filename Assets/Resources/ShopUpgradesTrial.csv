@@ -1,6 +1,4 @@
-shopUpgradeID,upgradeName,description,statType,value,cost,isOneTime
-DMG_01,Damage Boost,Increase damage by 5%,DamageMultiplier,0.05,10,TRUE
-CRIT_01,Crit Rate Boost,Increase crit rate by 5%,CritRate,0.05,10,TRUE
-HP_01,Max HP Boost,Increase max HP by 10,MaxHP,10,10,TRUE
-DEF_01,Damage Reduction,Reduce damage taken by 3,DamageReduction,3,10,TRUE
-SPD_01,Movement Speed Boost,Move speed increase by 5%,MoveSpeedMultiplier,0.05,10,TRUE
+DMG_01,Damage Boost,Increase damage by 5%,DamageMultiplier,0.05,50.0,True
+CRIT_01,Crit Rate Boost,Increase crit rate by 5%,CritRate,0.05,50.0,True
+HP_01,Max HP Boost,Increase max HP by 10,MaxHP,10.0,30.0,True
+SPD_01,Movement Speed Boost,Move speed increase by 5%,MoveSpeedMultiplier,0.05,20.0,True
