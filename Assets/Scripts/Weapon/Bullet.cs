@@ -5,10 +5,14 @@ public class Bullet : MonoBehaviour
     public float bulletSpeed = 1f;
     public string fireTag = "";
     public float damageDelt;
+    AudioManager audioManager;
+
 
     private void Start()
     {
         Destroy(gameObject, 5f);
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+
     }
 
     private void FixedUpdate()
@@ -29,6 +33,8 @@ public class Bullet : MonoBehaviour
         {
             PlayerStats ps = collision.GetComponent<PlayerStats>();
             if (ps != null) ps.TakeDamage(damageDelt);
+
+            audioManager.PlaySFX(audioManager.characterdamaged);
         }
         else if (collision.CompareTag("Enemy"))
         {
