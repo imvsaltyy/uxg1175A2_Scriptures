@@ -34,9 +34,6 @@ public class GameManager : MonoBehaviour
         lootBoxRarity = LoadCSV("LootBoxRarityTrial");
         lootBoxMultiplier = LoadCSV("LootBoxMultiplierTrial");
         rarityMultiplier = LoadCSV("RarityMultiplierTrial");
-
-        // NEW
-        sellValues = LoadCSV("SellValuesTrial");
     }
 
     public string[] LoadCSV(string fileName)
