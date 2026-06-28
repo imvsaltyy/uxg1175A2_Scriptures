@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class LevelEndPoint : MonoBehaviour
 {
-    [Header("Scene Loader")]
-    public SceneLoader sceneLoader;
+    [Header("Map")]
+    public GameObject map;
+
+    [Header("Current Level")]
+    public GameObject currentLevel;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,18 +15,19 @@ public class LevelEndPoint : MonoBehaviour
             return;
         }
 
-        if (LevelManager.Instance != null)
+        if (LevelNode.currentNode != null)
         {
-            LevelManager.Instance.CompleteCurrentLevel();
+            LevelNode.currentNode.ClearNode();
         }
 
-        if (sceneLoader != null)
+        if (currentLevel != null)
         {
-            sceneLoader.GoToLevelSelectScene();
+            currentLevel.SetActive(false);
         }
-        else
+
+        if (map != null)
         {
-            Debug.LogWarning("SceneLoader not assigned to endpoint.");
+            map.SetActive(true);
         }
     }
 }

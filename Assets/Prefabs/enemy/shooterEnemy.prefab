@@ -341,9 +341,7 @@ MonoBehaviour:
   speed: 0
   attackRange: 0
   detectionRange: 0
-  enemyDropPrefabs:
-  - {fileID: 5854216635654801776, guid: 2bf697c00cdf5ff44b89db5c9c372489, type: 3}
-  - {fileID: 3246685259266807434, guid: 4f6a03a5a826de4408533d8dabf5853f, type: 3}
+  coinPrefab: {fileID: 3246685259266807434, guid: 4f6a03a5a826de4408533d8dabf5853f, type: 3}
   attackCollider: {fileID: 0}
   idleState: 1
   chasedState: 0
