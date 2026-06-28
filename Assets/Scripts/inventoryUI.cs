@@ -35,7 +35,7 @@ public class inventoryUI : MonoBehaviour
             if (i < itemCount)
             {
                 GameObject item = InventoryManager.Instance.inventory[i];
-                SpriteRenderer sr = item.GetComponent<SpriteRenderer>();
+                SpriteRenderer sr = item.GetComponentInChildren<SpriteRenderer>(true);
 
                 if (sr != null)
                 {
