@@ -119,7 +119,7 @@ MonoBehaviour:
   - {fileID: 7211976546214358171, guid: 036450a0d870b79409faf2d46ca21fb2, type: 3}
   - {fileID: 7211976546214358171, guid: 90e34ed115ac19947b47bc5a4e24c888, type: 3}
   - {fileID: 5854216635654801776, guid: 4152bccd8402ebe4699e78677d583be1, type: 3}
-  - {fileID: 5854216635654801776, guid: 6f0d8b3aae95e9d44866ab4f10edcde1, type: 3}
+  - {fileID: 6197794834076759830, guid: 93a5ecc7abcc2a947a0d9fd59bca9490, type: 3}
   - {fileID: 7211976546214358171, guid: b8b71096890bc7f48b4331c4927ff61b, type: 3}
   - {fileID: 5854216635654801776, guid: 6fba0535367da524e82704dfafb67256, type: 3}
   assignedLoot: {fileID: 0}
