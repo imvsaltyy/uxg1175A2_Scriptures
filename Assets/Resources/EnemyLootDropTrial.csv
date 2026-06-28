@@ -1,2 +1,2 @@
-Heart,EnemyDrop,0.0,0.2,tbc,tbc
-Star,EnemyDrop,2.0,1.0,,
+lootID,Category,sellValue,dropRate
+Coin,EnemyDrop,1,100
