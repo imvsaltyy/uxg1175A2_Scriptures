@@ -6,11 +6,13 @@ public class nerfGun : iWeapon
 {
     public GameObject bulletPrefab;
     [HideInInspector] public Transform firePoint;
+    AudioManager audioManager;
 
     private void Awake()
     {
         weaponTypeName = "nerf_gun";
         firePoint = transform.GetChild(0).gameObject.transform;
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -42,6 +44,8 @@ public class nerfGun : iWeapon
         bullet.GetComponent<Bullet>().damageDelt = damage * dmgMultiplier;
 
         Debug.Log("Bullet fired by: " + ownerTag);
+
+        audioManager.PlaySFX(audioManager.charactershoot);
     }
 
 }
