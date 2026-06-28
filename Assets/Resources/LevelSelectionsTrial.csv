@@ -1,9 +1,10 @@
-NORMAL_01,normal,10.0,4.0,1.0,1.0,1.0,1.0,normal,,,,,
-CHEST_01,chest,0.0,0.0,1.0,1.0,1.0,1.0,chest,,,,,
-NORMAL_02,normal,10.0,8.0,1.0,1.5,1.0,2.0,normal,,,,,
-CHEST_02,chest,0.0,0.0,1.0,1.0,1.0,1.0,chest,,,,,
-NORMAL_03,normal,10.0,12.0,1.0,1.5,1.0,3.0,normal ,,,,,
-SWARM_01,swarm,5.0,20.0,1.5,2.0,1.5,1.0,swarm,,,,,
-NORMAL_04,normal,10.0,16.0,1.0,1.5,1.5,4.0,chest ,,,,,
-CHEST_03,chest,0.0,0.0,1.0,1.0,1.0,1.0,normal,,,,,
-SWARM_02,swarm,5.0,32.0,2.0,2.5,2.0,1.0,swarm,,,,,
+levelID,levelType,enemySpawnInterval,totalEnemies,enemyHPMultiplier,enemySpeedMultiplier,enemyDmgMultiplier,maxLootBox,lootboxRatesMultiplier
+NORMAL_01,normal,10,4,1,1,1,1,normal
+CHEST_01,chest,0,0,1,1,1,1,chest
+NORMAL_02,normal,10,8,1,1.5,1,2,normal
+CHEST_02,chest,0,0,1,1,1,1,chest
+NORMAL_03,normal,10,12,1,1.5,1,3,normal 
+SWARM_01,swarm,5,20,1.5,2,1.5,1,swarm
+NORMAL_04,normal,10,16,1,1.5,1.5,4,chest 
+CHEST_03,chest,0,0,1,1,1,1,normal
+SWARM_02,swarm,5,32,2,2.5,2,1,swarm
