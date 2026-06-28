@@ -85,4 +85,5 @@ public class inventoryUI : MonoBehaviour
         InventoryManager.Instance.RemoveItem(item);
         refreshInventory();
     }
+
 }

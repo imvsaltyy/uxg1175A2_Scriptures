@@ -2422,6 +2422,7 @@ MonoBehaviour:
   selectedLevelID: NORMAL_01
   ownedUpgradeIDs: []
   completedLevelIDs: []
+  currencyText: {fileID: 0}
 --- !u!4 &1167655029
 Transform:
   m_ObjectHideFlags: 0

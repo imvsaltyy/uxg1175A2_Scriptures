@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public static string[] lootBoxMultiplier;
     [HideInInspector] public static string[] rarityMultiplier;
 
+    // NEW
+    [HideInInspector] public static string[] sellValues;
+
     void Awake()
     {
         enemyType = LoadCSV("EnemyStatsTrial");
@@ -31,6 +34,9 @@ public class GameManager : MonoBehaviour
         lootBoxRarity = LoadCSV("LootBoxRarityTrial");
         lootBoxMultiplier = LoadCSV("LootBoxMultiplierTrial");
         rarityMultiplier = LoadCSV("RarityMultiplierTrial");
+
+        // NEW
+        sellValues = LoadCSV("SellValuesTrial");
     }
 
     public string[] LoadCSV(string fileName)
@@ -46,9 +52,10 @@ public class GameManager : MonoBehaviour
         string[] lines = csvFile.text.Split('\n');
         List<string> rows = new List<string>();
 
-        for (int i = 1; i < lines.Length; i++) // skip header row
+        for (int i = 1; i < lines.Length; i++)
         {
             string line = lines[i].Trim();
+
             if (!string.IsNullOrWhiteSpace(line))
                 rows.Add(line);
         }
@@ -57,24 +64,26 @@ public class GameManager : MonoBehaviour
         return rows.ToArray();
     }
 
-    // -------------------------------------------------------
-    // Static helpers so any script can look up data cleanly
-    // -------------------------------------------------------
+    //-------------------------------------------------------
+    // Rarity Multiplier
+    //-------------------------------------------------------
 
-    /// Returns the sell value multiplier for a given rarity name (e.g. "Common", "Legendary")
     public static float GetRarityMultiplier(string rarityName)
     {
-        if (rarityMultiplier == null) return 1f;
+        if (rarityMultiplier == null)
+            return 1f;
 
         foreach (string row in rarityMultiplier)
         {
             string[] cols = row.Split(',');
-            if (cols.Length < 2) continue;
+
+            if (cols.Length < 2)
+                continue;
 
             if (cols[0].Trim().Equals(rarityName, System.StringComparison.OrdinalIgnoreCase))
             {
-                // Values stored as "*1", "*2" etc — strip the asterisk
                 string raw = cols[1].Trim().Replace("*", "");
+
                 if (float.TryParse(raw, out float mult))
                     return mult;
             }
@@ -84,27 +93,61 @@ public class GameManager : MonoBehaviour
         return 1f;
     }
 
-    /// Returns the lootbox multiplier row for a given level type (e.g. "normal", "chest", "swarm")
-    /// Columns: [0]=id, [1]=Small, [2]=Medium, [3]=Large, [4]=Common, [5]=Uncommon, [6]=Rare, [7]=Epic, [8]=Legendary
+    //-------------------------------------------------------
+    // Loot Box Multipliers
+    //-------------------------------------------------------
+
     public static float[] GetLootBoxMultipliers(string multiplierID)
     {
-        if (lootBoxMultiplier == null) return null;
+        if (lootBoxMultiplier == null)
+            return null;
 
         foreach (string row in lootBoxMultiplier)
         {
             string[] cols = row.Split(',');
-            if (cols.Length < 9) continue;
+
+            if (cols.Length < 9)
+                continue;
 
             if (cols[0].Trim().Equals(multiplierID.Trim(), System.StringComparison.OrdinalIgnoreCase))
             {
                 float[] mults = new float[8];
+
                 for (int i = 0; i < 8; i++)
                     float.TryParse(cols[i + 1].Trim(), out mults[i]);
+
                 return mults;
             }
         }
 
         Debug.LogWarning("LootBox multiplier not found for: " + multiplierID);
         return null;
+    }
+
+    //-------------------------------------------------------
+    // Sell Value Lookup
+    //-------------------------------------------------------
+
+    public static int GetSellValue(string lootID)
+    {
+        if (sellValues == null)
+            return 0;
+
+        foreach (string row in sellValues)
+        {
+            string[] cols = row.Split(',');
+
+            if (cols.Length < 3)
+                continue;
+
+            if (cols[0].Trim().Equals(lootID.Trim(), System.StringComparison.OrdinalIgnoreCase))
+            {
+                if (int.TryParse(cols[2].Trim(), out int value))
+                    return value;
+            }
+        }
+
+        Debug.LogWarning("Sell value not found for: " + lootID);
+        return 0;
     }
 }
