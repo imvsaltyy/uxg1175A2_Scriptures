@@ -22,7 +22,7 @@ public class SceneLoader : MonoBehaviour
 
     public void GoToLevelSelectScene()
     {
-        SceneManager.LoadScene("LevelSelection");
+        SceneManager.LoadScene("LevelDesign");
     }
 
     public void GoToShopScene()
