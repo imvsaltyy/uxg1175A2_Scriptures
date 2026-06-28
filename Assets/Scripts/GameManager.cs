@@ -13,9 +13,6 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public static string[] levelSelections;
 
     // New data arrays
-    [HideInInspector] public static string[] lootBoxSize;
-    [HideInInspector] public static string[] lootBoxRarity;
-    [HideInInspector] public static string[] lootBoxMultiplier;
     [HideInInspector] public static string[] rarityMultiplier;
 
     // NEW
@@ -30,9 +27,6 @@ public class GameManager : MonoBehaviour
         enemyDrop = LoadCSV("EnemyLootDropTrial");
         lootBoxDrop = LoadCSV("LootBoxDropTrial");
         levelSelections = LoadCSV("LevelSelectionsTrial");
-        lootBoxSize = LoadCSV("LootBoxSizeTrial");
-        lootBoxRarity = LoadCSV("LootBoxRarityTrial");
-        lootBoxMultiplier = LoadCSV("LootBoxMultiplierTrial");
         rarityMultiplier = LoadCSV("RarityMultiplierTrial");
     }
 
@@ -88,37 +82,6 @@ public class GameManager : MonoBehaviour
 
         Debug.LogWarning("Rarity multiplier not found for: " + rarityName);
         return 1f;
-    }
-
-    //-------------------------------------------------------
-    // Loot Box Multipliers
-    //-------------------------------------------------------
-
-    public static float[] GetLootBoxMultipliers(string multiplierID)
-    {
-        if (lootBoxMultiplier == null)
-            return null;
-
-        foreach (string row in lootBoxMultiplier)
-        {
-            string[] cols = row.Split(',');
-
-            if (cols.Length < 9)
-                continue;
-
-            if (cols[0].Trim().Equals(multiplierID.Trim(), System.StringComparison.OrdinalIgnoreCase))
-            {
-                float[] mults = new float[8];
-
-                for (int i = 0; i < 8; i++)
-                    float.TryParse(cols[i + 1].Trim(), out mults[i]);
-
-                return mults;
-            }
-        }
-
-        Debug.LogWarning("LootBox multiplier not found for: " + multiplierID);
-        return null;
     }
 
     //-------------------------------------------------------
