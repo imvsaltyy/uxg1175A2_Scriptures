@@ -1,8 +1,9 @@
-teddy Bear,Valuables,4,25
-duckie,Valuables,6,15
-lego,Valuables,8,15
-book,Valuables,10,15
-ball,Valuables,12,10
-magicWand,Valuables,14,10
-cube,Valuables,16,5
-yoyo,Valuables,18,5
+lootID,Category,sellValue,dropRate
+TeddyBear,Valuables,4,25
+Duckie,Valuables,6,15
+Lego,Valuables,8,15
+Book,Valuables,10,15
+Ball,Valuables,12,10
+MagicWand,Valuables,14,10
+Cube,Valuables,16,5
+Yoyo,Valuables,18,5
