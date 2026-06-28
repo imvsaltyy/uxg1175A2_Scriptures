@@ -249,7 +249,6 @@ public class PlayerControl : MonoBehaviour
             if (dot >= angleLimit)
             {
                 canShootEnemy = true;
-                Debug.Log("Enemy in FOV. Can shoot.");
                 return;
             }
         }

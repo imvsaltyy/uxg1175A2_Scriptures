@@ -1,9 +1,19 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelEndPoint : MonoBehaviour
 {
-    [Header("Scene Loader")]
-    public SceneLoader sceneLoader;
+    [Header("Map")]
+    public GameObject map;
+
+    [Header("Current Level")]
+    public GameObject currentLevel;
+
+    [Header("Final Level")]
+    public string finalLevelID = "SWARM_02";
+
+    [Header("Scene")]
+    private string startSceneName = "Shop";
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,18 +22,45 @@ public class LevelEndPoint : MonoBehaviour
             return;
         }
 
+        // Tell LevelManager this level is completed
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.CompleteCurrentLevel();
         }
 
-        if (sceneLoader != null)
+        // Clear/unlock the map node if using LevelNode system
+        if (LevelNode.currentNode != null)
         {
-            sceneLoader.GoToLevelSelectScene();
+            LevelNode.currentNode.ClearNode();
         }
-        else
+
+        string currentLevelID = "";
+
+        if (currentLevel != null)
         {
-            Debug.LogWarning("SceneLoader not assigned to endpoint.");
+            currentLevelID = currentLevel.name;
+        }
+        else if (LevelManager.Instance != null)
+        {
+            currentLevelID = LevelManager.Instance.levelID;
+        }
+
+        // If player completed SWARM_02, go back to start scene
+        if (currentLevelID == finalLevelID)
+        {
+            SceneManager.LoadScene(startSceneName);
+            return;
+        }
+
+        // Otherwise, return to map
+        if (currentLevel != null)
+        {
+            currentLevel.SetActive(false);
+        }
+
+        if (map != null)
+        {
+            map.SetActive(true);
         }
     }
 }

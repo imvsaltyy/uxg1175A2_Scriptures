@@ -15,7 +15,9 @@ public class spawnEnemy : MonoBehaviour
     [HideInInspector] public float attackRange;
     [HideInInspector] public float detectionRange;
 
-    public List<GameObject> enemyDropPrefabs;
+    //public List<GameObject> enemyDropPrefabs;
+    [Header("Enemy Drop")]
+    public GameObject coinPrefab;
     #endregion
 
     [HideInInspector] public Collider2D attackCollider;
@@ -167,57 +169,69 @@ public class spawnEnemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+    //public void enemyDrop()
+    //{
+    //    if (GameManager.enemyDrop == null || GameManager.enemyDrop.Length == 0)
+    //    {
+    //        Debug.LogWarning("enemyDrop CSV is empty or not loaded.");
+    //        return;
+    //    }
+
+    //    if (enemyDropPrefabs == null || enemyDropPrefabs.Count == 0)
+    //    {
+    //        Debug.LogWarning(ID + ": no enemyDropPrefabs assigned in Inspector.");
+    //        return;
+    //    }
+
+    //    // dropRate in EnemyLootDropTrial is a fraction 0.0-1.0 (e.g. Heart=0.2, Star=1.0)
+    //    // Roll a random float and check each item independently (items are not mutually exclusive)
+    //    bool anyDropped = false;
+
+    //    for (int i = 0; i < GameManager.enemyDrop.Length; i++)
+    //    {
+    //        string[] cols = GameManager.enemyDrop[i].Split(',');
+    //        if (cols.Length < 4) continue;
+
+    //        string dropID = cols[0].Trim();
+
+    //        float dropRate;
+    //        if (!float.TryParse(cols[3].Trim(), out dropRate)) continue;
+
+    //        float roll = Random.value; // 0.0 to 1.0
+    //        Debug.Log(ID + " drop roll for " + dropID + ": " + roll + " vs rate " + dropRate);
+
+    //        if (roll <= dropRate)
+    //        {
+    //            // Find the matching prefab
+    //            for (int j = 0; j < enemyDropPrefabs.Count; j++)
+    //            {
+    //                if (enemyDropPrefabs[j] == null) continue;
+
+    //                EnemyDrop dropComp = enemyDropPrefabs[j].GetComponent<EnemyDrop>();
+    //                if (dropComp != null && dropComp.toID.Trim() == dropID)
+    //                {
+    //                    Instantiate(enemyDropPrefabs[j], transform.position, Quaternion.identity);
+    //                    Debug.Log(ID + " dropped: " + dropID);
+    //                    anyDropped = true;
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    if (!anyDropped)
+    //        Debug.Log(ID + ": no loot dropped this time.");
+    //}
+
     public void enemyDrop()
     {
-        if (GameManager.enemyDrop == null || GameManager.enemyDrop.Length == 0)
+        if (coinPrefab == null)
         {
-            Debug.LogWarning("enemyDrop CSV is empty or not loaded.");
+            Debug.LogWarning(ID + ": Coin prefab not assigned.");
             return;
         }
 
-        if (enemyDropPrefabs == null || enemyDropPrefabs.Count == 0)
-        {
-            Debug.LogWarning(ID + ": no enemyDropPrefabs assigned in Inspector.");
-            return;
-        }
-
-        // dropRate in EnemyLootDropTrial is a fraction 0.0-1.0 (e.g. Heart=0.2, Star=1.0)
-        // Roll a random float and check each item independently (items are not mutually exclusive)
-        bool anyDropped = false;
-
-        for (int i = 0; i < GameManager.enemyDrop.Length; i++)
-        {
-            string[] cols = GameManager.enemyDrop[i].Split(',');
-            if (cols.Length < 4) continue;
-
-            string dropID = cols[0].Trim();
-
-            float dropRate;
-            if (!float.TryParse(cols[3].Trim(), out dropRate)) continue;
-
-            float roll = Random.value; // 0.0 to 1.0
-            Debug.Log(ID + " drop roll for " + dropID + ": " + roll + " vs rate " + dropRate);
-
-            if (roll <= dropRate)
-            {
-                // Find the matching prefab
-                for (int j = 0; j < enemyDropPrefabs.Count; j++)
-                {
-                    if (enemyDropPrefabs[j] == null) continue;
-
-                    EnemyDrop dropComp = enemyDropPrefabs[j].GetComponent<EnemyDrop>();
-                    if (dropComp != null && dropComp.toID.Trim() == dropID)
-                    {
-                        Instantiate(enemyDropPrefabs[j], transform.position, Quaternion.identity);
-                        Debug.Log(ID + " dropped: " + dropID);
-                        anyDropped = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (!anyDropped)
-            Debug.Log(ID + ": no loot dropped this time.");
+        Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        Debug.Log(ID + " dropped coin.");
     }
 }

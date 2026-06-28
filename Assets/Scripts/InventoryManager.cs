@@ -23,8 +23,14 @@ public class InventoryManager : MonoBehaviour
     public void AddItem(GameObject item)
     {
         inventory.Add(item);
+
+        SpriteRenderer sr = item.GetComponentInChildren<SpriteRenderer>(true);
+        if (sr != null)
+            Debug.Log("Added to inventory: " + item.name + " with sprite " + sr.sprite.name);
+        else
+            Debug.LogWarning("Added to inventory but no sprite found: " + item.name);
+
         item.SetActive(false);
-        Debug.Log("Added to inventory: " + item.name);
     }
 
     public void RemoveItem(GameObject item)
