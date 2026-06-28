@@ -1,31 +1,24 @@
-using System.Collections;
 using UnityEngine;
 
 public class enemyShooter : spawnEnemy
 {
-    //private GameObject shootingPoint;
-    //public GameObject bullet;
-
     private float nextTimeToFire = 0f;
 
     private void Awake()
     {
         enemyTypeName = "enemy_shooter";
-
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
         base.Start();
-
     }
 
     protected override void Update()
     {
         base.Update();
 
-
+        // Enter chase state when in detection range but outside attack range
         if (attackRange < distance && distance < detectionRange && !chasedState)
         {
             idleState = false;
@@ -33,39 +26,33 @@ public class enemyShooter : spawnEnemy
             attackState = false;
         }
 
-
-        if (!idleState)
+        // Face the player whenever not idle.
+        // Atan2 gives the angle for the RIGHT axis (+X), but bullets fire along UP (+Y),
+        // so we subtract 90 degrees to align the facing with the fire direction.
+        if (!idleState && player != null)
         {
-            Vector2 direction = player.transform.position - transform.position;
-            direction.Normalize();
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            transform.rotation = Quaternion.Euler(Vector3.forward * angle);
+            Vector2 direction = (player.transform.position - transform.position).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg -270f;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
-
     }
 
     public override void enemyAttack()
     {
-        //base.enemyAttack();
+        nerfGun nerf = GetComponentInChildren<nerfGun>();
+        lazerGun lazer = GetComponentInChildren<lazerGun>();
 
-        //Debug.Log("shooterEnemyAttack");
-
-        if (Time.time >= nextTimeToFire && gameObject.GetComponentInChildren<nerfGun>() != null)
+        if (nerf != null && Time.time >= nextTimeToFire)
         {
-            nextTimeToFire = Time.time + gameObject.GetComponentInChildren<nerfGun>().fireRate;
-            gameObject.GetComponentInChildren<nerfGun>().Fire(damage);
+            nextTimeToFire = Time.time + nerf.fireRate;
+            nerf.SetOwnerTag(gameObject.tag);
+            nerf.Fire(damage);
         }
-
-        else if (Time.time >= nextTimeToFire && gameObject.GetComponentInChildren<lazerGun>() != null)
+        else if (lazer != null && Time.time >= nextTimeToFire)
         {
-            nextTimeToFire = Time.time + gameObject.GetComponentInChildren<lazerGun>().fireRate;
-            gameObject.GetComponentInChildren<lazerGun>().Fire(damage);
+            nextTimeToFire = Time.time + lazer.fireRate;
+            lazer.SetOwnerTag(gameObject.tag);
+            lazer.Fire(damage);
         }
-
-
     }
-
-
 }

@@ -1,65 +1,88 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class inventoryUI : MonoBehaviour
 {
-    private bool display = false;
-    public GameObject inventoryLootUI;
     public Transform gridParent;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        refreshInventory();
-    }
 
     private void OnEnable()
     {
         refreshInventory();
-        
     }
 
     public void displayInventory()
     {
-        gameObject.SetActive(!display);
-        display = !display;
+        bool isCurrentlyActive = gameObject.activeSelf;
+        gameObject.SetActive(!isCurrentlyActive);
 
         if (gameObject.activeSelf)
-        {
-            gameObject.SetActive(false);
-        }
-
-        else
-        {
             refreshInventory();
-
-            gameObject.SetActive(true);
-        }
-
     }
 
     public void refreshInventory()
     {
-        if (InventoryManager.Instance.inventory.Count > 0)
+        if (InventoryManager.Instance == null) return;
+
+        int itemCount = InventoryManager.Instance.inventory.Count;
+        int slotCount = gridParent.childCount;
+
+        for (int i = 0; i < slotCount; i++)
         {
-            for (int i = 0; i < InventoryManager.Instance.inventory.Count; i++)
+            Transform slot = gridParent.GetChild(i);
+            Image slotImage = slot.GetComponent<Image>();
+            if (slotImage == null) continue;
+
+            if (i < itemCount)
             {
-                Image slotImage = gridParent.transform.GetChild(i).GetComponent<Image>();
+                GameObject item = InventoryManager.Instance.inventory[i];
+                SpriteRenderer sr = item.GetComponent<SpriteRenderer>();
 
-                Sprite toReplace = InventoryManager.Instance.inventory[i].GetComponent<SpriteRenderer>().sprite;
+                if (sr != null)
+                {
+                    slotImage.sprite = sr.sprite;
+                    slotImage.color = sr.color;
+                }
 
-                Color replaceColor = InventoryManager.Instance.inventory[i].GetComponent<SpriteRenderer>().color;
+                // Show sell value on the slot if there's a Text child
+                Text sellLabel = slot.GetComponentInChildren<Text>();
+                if (sellLabel != null)
+                {
+                    iInventory inv = item.GetComponent<iInventory>();
+                    if (inv != null)
+                        sellLabel.text = "$" + inv.FinalSellValue.ToString("F0");
+                }
+            }
+            else
+            {
+                // Empty slot — clear it
+                slotImage.sprite = null;
+                slotImage.color = new Color(1f, 1f, 1f, 0.2f);
 
-                slotImage.sprite = toReplace;
-                slotImage.color = replaceColor;
+                Text sellLabel = slot.GetComponentInChildren<Text>();
+                if (sellLabel != null) sellLabel.text = "";
             }
         }
+    }
+
+    // Wire this to a Sell button on each inventory slot.
+    // Pass the slot index via the Button's OnClick event in the Inspector.
+    public void SellItem(int slotIndex)
+    {
+        if (InventoryManager.Instance == null) return;
+        if (slotIndex >= InventoryManager.Instance.inventory.Count) return;
+
+        GameObject item = InventoryManager.Instance.inventory[slotIndex];
+        iInventory itemData = item.GetComponent<iInventory>();
+        if (itemData == null) return;
+
+        int sellAmount = Mathf.FloorToInt(itemData.FinalSellValue);
+
+        if (PlayerManager.Instance != null)
+            PlayerManager.Instance.AddCurrency(sellAmount);
+
+        Debug.Log("Sold " + itemData.lootID + " [" + itemData.rarity + "] for $" + sellAmount);
+
+        InventoryManager.Instance.RemoveItem(item);
+        refreshInventory();
     }
 }

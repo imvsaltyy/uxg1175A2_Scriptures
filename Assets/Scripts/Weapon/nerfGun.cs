@@ -32,14 +32,16 @@ public class nerfGun : iWeapon
     }
 
     //Takes in the attack/damage value based on who's firing the gun.
-    public void Fire(float damage)
+    public override void Fire(float damage)
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.GetComponent<Bullet>().bulletSpeed = damageSpeed;
-        bullet.GetComponent<Bullet>().fireTag = transform.parent.tag;
+        bullet.GetComponent<Bullet>().fireTag = ownerTag;
 
         //Final Damage output is based on character's damage * weapon multiplier
         bullet.GetComponent<Bullet>().damageDelt = damage * dmgMultiplier;
+
+        Debug.Log("Bullet fired by: " + ownerTag);
     }
 
 }
