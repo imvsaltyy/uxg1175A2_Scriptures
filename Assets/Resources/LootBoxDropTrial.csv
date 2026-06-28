@@ -1,4 +1,9 @@
-lootID,Category,sellValue,dropRate
-lego,lootBox,5,60
-duckie,lootBox,5,30
-teddyBear,lootBox,5,10
+lootID,Category,sellValue,DropRate
+teddy Bear,Valuables,4,25
+duckie,Valuables,6,15
+lego,Valuables,8,15
+book,Valuables,10,15
+ball,Valuables,12,10
+magicWand,Valuables,14,10
+cube,Valuables,16,5
+yoyo,Valuables,18,5
