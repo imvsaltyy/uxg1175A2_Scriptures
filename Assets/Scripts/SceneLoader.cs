@@ -20,6 +20,11 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene("Main");
     }
 
+    public void GoToLevelSelectScene()
+    {
+        SceneManager.LoadScene("LevelSelection");
+    }
+
     public void GoToShopScene()
     {
         SceneManager.LoadScene("Shop");

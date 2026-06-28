@@ -14,6 +14,7 @@ public class iWeapon : iInventory
     [HideInInspector] public float raySize;
     [HideInInspector] public float increaseRate;
 
+    [HideInInspector] public string ownerTag;
 
     protected virtual void Start()
     {
@@ -49,8 +50,14 @@ public class iWeapon : iInventory
         }
     }
 
-    private void Fire()
+    public void SetOwnerTag(string tag)
     {
+        ownerTag = tag;
+        Debug.Log(ID + " owner tag set to: " + ownerTag);
+    }
 
+    public virtual void Fire(float damage)
+    {
+        Debug.LogWarning("Base weapon Fire() called. Override this in weapon child class.");
     }
 }

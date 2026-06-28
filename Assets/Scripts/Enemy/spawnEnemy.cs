@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor;
-using UnityEditor.Profiling;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class spawnEnemy : MonoBehaviour
 {
@@ -19,19 +12,15 @@ public class spawnEnemy : MonoBehaviour
     [HideInInspector] public float HP;
     [HideInInspector] public float damage;
     [HideInInspector] public float speed;
+    [HideInInspector] public float attackRange;
+    [HideInInspector] public float detectionRange;
 
-     [HideInInspector] public float attackRange;
     public List<GameObject> enemyDropPrefabs;
-    //public float attackCooldown;
-
-    [HideInInspector]
-    public float detectionRange;
     #endregion
 
-    [HideInInspector]
-    public Collider2D attackCollider;
+    [HideInInspector] public Collider2D attackCollider;
 
-    #region Enemy
+    #region Enemy State
     public bool idleState = true;
     public bool chasedState = false;
     public bool attackState = false;
@@ -40,37 +29,30 @@ public class spawnEnemy : MonoBehaviour
 
     public float distance;
     [HideInInspector] public GameObject player;
-
-    public Coroutine DoT;
     public Coroutine Atk;
-
     #endregion
 
-    private void Awake()
-    {
-        //LoadExcelData();
-
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
         statsAssignment();
         player = GameObject.FindWithTag("Player");
 
-        gameObject.GetComponent<CircleCollider2D>().radius = detectionRange;
+        if (LevelManager.Instance != null)
+        {
+            HP *= LevelManager.Instance.enemyHPMultiplier;
+            damage *= LevelManager.Instance.enemyDmgMultiplier;
+            speed *= LevelManager.Instance.enemySpeedMultiplier;
+        }
+
+        CircleCollider2D circle = GetComponent<CircleCollider2D>();
+        if (circle != null) circle.radius = detectionRange;
     }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
-        distance = Vector2.Distance(transform.position, player.transform.position);
+        if (player == null || !isAlive) return;
 
-        if (isAlive && DoT == null)
-        {
-            //Damage Over Time to emulate death
-            DoT = StartCoroutine(damageOT());
-        }
+        distance = Vector2.Distance(transform.position, player.transform.position);
 
         if (distance <= attackRange && idleState && !attackState)
         {
@@ -86,29 +68,17 @@ public class spawnEnemy : MonoBehaviour
             attackState = false;
         }
 
-        if (HP <= 0)
+        if (HP <= 0 && isAlive)
         {
-            isAlive = !isAlive;
-            isDead = !isDead;
-
-            
-            enemyDead();
-
+            isAlive = false;
+            isDead = true;
             StopAllCoroutines();
+            enemyDead();
+            return;
         }
 
-        if (chasedState && !idleState && !attackState)
-        {
-            //Debug.Log("Enter Chased State");
-            playerChase();
-        }
-
-        if (attackState && !chasedState && Atk == null)
-        {
-            //Debug.Log("Enter Attack State");
-            enemyAttack();
-        }
-
+        if (chasedState && !idleState && !attackState) playerChase();
+        if (attackState && !chasedState && Atk == null) enemyAttack();
     }
 
     void statsAssignment()
@@ -117,104 +87,36 @@ public class spawnEnemy : MonoBehaviour
 
         for (int i = 0; i < GameManager.enemyType.Length; i++)
         {
-            string[] columns = GameManager.enemyType[i].Split(',');
+            string[] cols = GameManager.enemyType[i].Split(',');
+            if (cols.Length < 9) continue;
 
-            if (columns[0] == enemyTypeName)
+            if (cols[0].Trim() == enemyTypeName)
             {
-                ID = columns[0];
-                variantID = columns[1];
-
-                HP = float.Parse(columns[2]);
-                damage = float.Parse(columns[3]);
-                speed = float.Parse(columns[4]);
-                attackRange = float.Parse(columns[5]);  
- 
-                //newEnemy.attackCooldown = float.Parse(columns[6]);
-                
-                detectionRange = float.Parse(columns[7]);
-
-                lootTableID = columns[8];
-
+                ID = cols[0].Trim();
+                variantID = cols[1].Trim();
+                HP = float.Parse(cols[2].Trim());
+                damage = float.Parse(cols[3].Trim());
+                speed = float.Parse(cols[4].Trim());
+                attackRange = float.Parse(cols[5].Trim());
+                detectionRange = float.Parse(cols[7].Trim());
+                lootTableID = cols[8].Trim();
                 assigned = true;
-                Debug.Log(ID + " Enemy stats assigned");
-
-                //Debug.Log("HP: " + HP);
-                //Debug.Log("Damage: " + damage);
-                //Debug.Log("Speed: " + speed);
+                Debug.Log(ID + " stats assigned. HP=" + HP + " dmg=" + damage);
+                break;
             }
-
         }
 
-        //Failsafe if enemy type is not found
         if (!assigned)
         {
-            Debug.Log("Enemy type not found!");
+            Debug.LogError("Enemy type not found: " + enemyTypeName);
             Destroy(gameObject);
         }
     }
 
-    //LoadExcelData()
-
-    //Getting Enemy Stats from Data File (Unused)
-    //void LoadExcelData()
-    //{
-    //    bool assigned = false;
-
-    //    //Load CSV file from the Resources folder
-    //    TextAsset enemyCSV = Resources.Load<TextAsset>("EnemyStatsTrial");
-
-    //    if (enemyCSV == null)
-    //    {
-    //        //Debug.LogError("CSV file not found.");
-    //        return;
-    //    }
-
-    //    string[] rows = enemyCSV.text.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
-
-    //    for (int i = 1; i < rows.Length; i++)
-    //    {
-    //        //Skip empty rows
-    //        if (string.IsNullOrWhiteSpace(rows[i])) continue;
-
-    //        //Split columns by comma delimiter
-    //        string[] columns = rows[i].Split(',');
-
-    //        if (columns[0] != enemyTypeName) continue;
-
-    //        //Assign vales to variables in the order that is inside the CSV File
-    //        else
-    //        {
-    //            ID = columns[0];
-
-    //            this.HP = float.Parse(columns[1]);
-    //            damage = float.Parse(columns[2]);
-    //            speed = float.Parse(columns[3]);
-
-    //            //newEnemy.attackRange = float.Parse(columns[4]);
-    //            //newEnemy.attackCooldown = float.Parse(columns[5]);
-    //            //newEnemy.detectionRange = float.Parse(columns[6]);
-
-    //            lootTableID = columns[7];
-
-    //            assigned = !assigned;
-    //        }
-
-    //    }
-
-    //    //Failsafe if enemy type is not found
-    //    if (!assigned)
-    //    {
-    //        Debug.Log("Enemy type not found!");
-    //        Destroy(gameObject);
-    //    }
-    //}
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !chasedState && idleState)
+        if (collision.CompareTag("Player") && !chasedState && idleState)
         {
-            //Begin player chase here
             idleState = false;
             chasedState = true;
         }
@@ -222,17 +124,16 @@ public class spawnEnemy : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !chasedState && idleState)
+        if (collision.CompareTag("Player") && !chasedState && idleState)
         {
-            //Begin player chase here
             idleState = false;
             chasedState = true;
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player") && chasedState && !idleState)
+        if (other.CompareTag("Player") && chasedState && !idleState)
         {
             idleState = true;
             chasedState = false;
@@ -241,89 +142,82 @@ public class spawnEnemy : MonoBehaviour
 
     public void playerChase()
     {
-
-        Vector2 direction = player.transform.position - transform.position;
-        direction.Normalize();
+        Vector2 direction = (player.transform.position - transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, speed * Time.deltaTime);
-
-        transform.rotation = Quaternion.Euler(Vector3.forward * angle);
+        transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
         if (distance <= attackRange && !attackState)
         {
             chasedState = false;
             attackState = true;
         }
-
     }
 
-    public IEnumerator damageOT()
-    {
-        while (isAlive)
-        {
-            yield return new WaitForSeconds(1f);
-            HP -= 30f;
-
-            Debug.Log(HP);
-        }
-
-    }
-
-    public virtual void enemyAttack()
-    {
-        //Debug.Log("Basic Enemy Attack");
-        
-    }
+    public virtual void enemyAttack() { }
 
     public void enemyDead()
     {
+        if (LevelManager.Instance != null)
+            LevelManager.Instance.EnemyDied();
+
         enemyDrop();
-
-        Debug.Log("Enemy Dead");
+        Debug.Log("Enemy Dead: " + ID);
         Destroy(gameObject);
-
-        //Trigger Loot Spawn here
     }
 
     public void enemyDrop()
     {
-        int random = UnityEngine.Random.Range(1,100);
-        bool lootDropped = false;
-
-        if (!lootDropped)
+        if (GameManager.enemyDrop == null || GameManager.enemyDrop.Length == 0)
         {
-            for (int i = 0; i < GameManager.enemyDrop.Length; i++)
+            Debug.LogWarning("enemyDrop CSV is empty or not loaded.");
+            return;
+        }
+
+        if (enemyDropPrefabs == null || enemyDropPrefabs.Count == 0)
+        {
+            Debug.LogWarning(ID + ": no enemyDropPrefabs assigned in Inspector.");
+            return;
+        }
+
+        // dropRate in EnemyLootDropTrial is a fraction 0.0-1.0 (e.g. Heart=0.2, Star=1.0)
+        // Roll a random float and check each item independently (items are not mutually exclusive)
+        bool anyDropped = false;
+
+        for (int i = 0; i < GameManager.enemyDrop.Length; i++)
+        {
+            string[] cols = GameManager.enemyDrop[i].Split(',');
+            if (cols.Length < 4) continue;
+
+            string dropID = cols[0].Trim();
+
+            float dropRate;
+            if (!float.TryParse(cols[3].Trim(), out dropRate)) continue;
+
+            float roll = Random.value; // 0.0 to 1.0
+            Debug.Log(ID + " drop roll for " + dropID + ": " + roll + " vs rate " + dropRate);
+
+            if (roll <= dropRate)
             {
-                string[] columns = GameManager.enemyDrop[i].Split(',');
-
-                if (random > int.Parse(columns[3]))
+                // Find the matching prefab
+                for (int j = 0; j < enemyDropPrefabs.Count; j++)
                 {
-                    lootDropped = true;
-                    Debug.Log("Dropped " + columns[0]);
+                    if (enemyDropPrefabs[j] == null) continue;
 
-                    for (int j = 0; j < enemyDropPrefabs.Count; j++)
+                    EnemyDrop dropComp = enemyDropPrefabs[j].GetComponent<EnemyDrop>();
+                    if (dropComp != null && dropComp.toID.Trim() == dropID)
                     {
-                        if (columns[0] == enemyDropPrefabs[j].gameObject.GetComponent<EnemyDrop>().toID)
-                        {
-                            GameObject droppedItem = Instantiate(enemyDropPrefabs[j].gameObject, transform.position, Quaternion.identity);
-                        }
+                        Instantiate(enemyDropPrefabs[j], transform.position, Quaternion.identity);
+                        Debug.Log(ID + " dropped: " + dropID);
+                        anyDropped = true;
+                        break;
                     }
-
-                    break;
                 }
-
-                else
-                {
-                    continue;
-                }
-
             }
         }
 
-        if (!lootDropped)
-        {
-            Debug.Log("No loot was dropped");
-        }
+        if (!anyDropped)
+            Debug.Log(ID + ": no loot dropped this time.");
     }
 }
