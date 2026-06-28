@@ -1,23 +1,16 @@
 using TMPro;
 using UnityEngine;
 
+// Single source of truth for currency — reads and writes to PlayerManager.
 public class ShopInventory : MonoBehaviour
 {
     public static ShopInventory Instance;
 
-    [Header("Currency")]
-    public int currentCurrency = 0;
-
     [SerializeField] private TMP_Text currencyText;
 
-    private void Awake()
+    public void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -27,25 +20,11 @@ public class ShopInventory : MonoBehaviour
         UpdateCurrencyUI();
     }
 
-    public void AddCurrency(int amount)
+    // Called every time currency changes so the UI stays in sync
+    public void UpdateCurrencyUI()
     {
-        currentCurrency += amount;
-        UpdateCurrencyUI();
-    }
-
-    public bool SpendCurrency(int amount)
-    {
-        if (currentCurrency < amount)
-            return false;
-
-        currentCurrency -= amount;
-        UpdateCurrencyUI();
-        return true;
-    }
-
-    public int GetCurrency()
-    {
-        return currentCurrency;
+        if (currencyText != null && PlayerManager.Instance != null)
+            currencyText.text = "$" + PlayerManager.Instance.currency;
     }
 
     public void SetCurrencyText(TMP_Text text)
@@ -54,9 +33,24 @@ public class ShopInventory : MonoBehaviour
         UpdateCurrencyUI();
     }
 
-    private void UpdateCurrencyUI()
+    public void AddCurrency(int amount)
     {
-        if (currencyText != null)
-            currencyText.text = "$" + currentCurrency;
+        if (PlayerManager.Instance == null) return;
+        PlayerManager.Instance.AddCurrency(amount);
+        UpdateCurrencyUI();
+    }
+
+    public bool SpendCurrency(int amount)
+    {
+        if (PlayerManager.Instance == null) return false;
+        if (PlayerManager.Instance.currency < amount) return false;
+        PlayerManager.Instance.currency -= amount;
+        UpdateCurrencyUI();
+        return true;
+    }
+
+    public int GetCurrency()
+    {
+        return PlayerManager.Instance != null ? PlayerManager.Instance.currency : 0;
     }
 }

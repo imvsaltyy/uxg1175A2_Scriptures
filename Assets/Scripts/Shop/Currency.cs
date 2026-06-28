@@ -10,4 +10,11 @@ public class CurrencyUI : MonoBehaviour
         if (ShopInventory.Instance != null)
             ShopInventory.Instance.SetCurrencyText(currencyText);
     }
+
+    private void OnEnable()
+    {
+        // Refresh whenever this panel becomes visible
+        if (ShopInventory.Instance != null)
+            ShopInventory.Instance.UpdateCurrencyUI();
+    }
 }

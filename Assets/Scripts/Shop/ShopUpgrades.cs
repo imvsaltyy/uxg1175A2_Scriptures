@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;
 
 public class ShopUpgrades : MonoBehaviour
 {
@@ -14,61 +16,87 @@ public class ShopUpgrades : MonoBehaviour
     [HideInInspector] public int cost;
     [HideInInspector] public bool isOneTime;
 
+    [Header("UI (assign per upgrade button)")]
+    public TMP_Text nameText;
+    public TMP_Text descText;
+    public TMP_Text costText;
+    public Button buyButton;
+
     [Header("Purchase State")]
     public bool isPurchased;
 
-    // Kept for PlayerStats to read from — populated by PlayerManager
     public static List<string> purchasedUpgradeIDs = new List<string>();
+
+    // One shared currency text for the whole shop scene — assign on ANY one upgrade, all will find it
+    public static TMP_Text sharedCurrencyText;
+    public TMP_Text currencyTextToRegister; // drag your currency TMP_Text here on ONE upgrade object
 
     private void Start()
     {
+        // Register the shared currency text if this object has one assigned
+        if (currencyTextToRegister != null)
+            sharedCurrencyText = currencyTextToRegister;
+
         statsAssignment();
 
-        // Sync static list from PlayerManager on scene load
         if (PlayerManager.Instance != null)
             purchasedUpgradeIDs = PlayerManager.Instance.ownedUpgradeIDs;
 
-        // Reflect already-purchased state in the UI
         isPurchased = purchasedUpgradeIDs.Contains(shopUpgradeID);
+        RefreshUI();
+        UpdateSharedCurrencyText();
     }
 
     private void statsAssignment()
     {
-        bool assigned = false;
+        if (GameManager.shopUpgrades == null || GameManager.shopUpgrades.Length == 0)
+        {
+            Debug.LogError("ShopUpgrades CSV not loaded!");
+            return;
+        }
 
+        bool assigned = false;
         for (int i = 0; i < GameManager.shopUpgrades.Length; i++)
         {
-            string[] columns = GameManager.shopUpgrades[i].Split(',');
+            string[] col = GameManager.shopUpgrades[i].Split(',');
+            if (col.Length < 7) continue;
+            if (col[0].Trim() != shopUpgradeID) continue;
 
-            if (columns[0].Trim() == shopUpgradeID)
-            {
-                shopUpgradeID = columns[0].Trim();
-                upgradeName = columns[1].Trim();
-                description = columns[2].Trim();
-                statType = columns[3].Trim();
-                value = float.Parse(columns[4].Trim());
-                cost = int.Parse(columns[5].Trim());
-                isOneTime = bool.Parse(columns[6].Trim());
-
-                assigned = true;
-                Debug.Log(upgradeName + " shop upgrade assigned");
-                break;
-            }
+            upgradeName = col[1].Trim();
+            description = col[2].Trim();
+            statType = col[3].Trim();
+            value = float.Parse(col[4].Trim());
+            cost = Mathf.RoundToInt(float.Parse(col[5].Trim()));
+            isOneTime = bool.Parse(col[6].Trim());
+            assigned = true;
+            Debug.Log(upgradeName + " assigned, cost=$" + cost);
+            break;
         }
 
         if (!assigned)
             Debug.LogWarning("Shop upgrade ID not found: " + shopUpgradeID);
     }
 
+    void RefreshUI()
+    {
+        if (nameText != null) nameText.text = upgradeName;
+        if (descText != null) descText.text = description;
+        if (costText != null) costText.text = "$" + cost;
+        if (buyButton != null) buyButton.interactable = !isPurchased;
+    }
+
+    static void UpdateSharedCurrencyText()
+    {
+        if (sharedCurrencyText != null && PlayerManager.Instance != null)
+            sharedCurrencyText.text = "$" + PlayerManager.Instance.currency;
+    }
+
+    // Wire this to every Buy button's OnClick in Inspector
     public void BuyUpgrade()
     {
-        if (PlayerManager.Instance == null)
-        {
-            Debug.LogError("PlayerManager not found!");
-            return;
-        }
+        if (PlayerManager.Instance == null) { Debug.LogError("No PlayerManager!"); return; }
 
-        if (isOneTime && PlayerManager.Instance.ownedUpgradeIDs.Contains(shopUpgradeID))
+        if (isOneTime && isPurchased)
         {
             Debug.Log("Already purchased: " + upgradeName);
             return;
@@ -79,13 +107,14 @@ public class ShopUpgrades : MonoBehaviour
         if (success)
         {
             isPurchased = true;
-            // Keep static list in sync so PlayerStats can read it
             purchasedUpgradeIDs = PlayerManager.Instance.ownedUpgradeIDs;
-            Debug.Log("Purchased: " + upgradeName);
+            RefreshUI();
+            UpdateSharedCurrencyText(); // update currency display immediately
+            Debug.Log("Purchased: " + upgradeName + " | Remaining: $" + PlayerManager.Instance.currency);
         }
         else
         {
-            Debug.Log("Not enough currency to buy: " + upgradeName);
+            Debug.Log("Not enough currency. Have: $" + PlayerManager.Instance.currency + " Need: $" + cost);
         }
     }
 }

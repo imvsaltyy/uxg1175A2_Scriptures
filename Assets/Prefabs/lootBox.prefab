@@ -114,14 +114,14 @@ MonoBehaviour:
   lootBoxUIObject: {fileID: 0}
   inventoryUIObject: {fileID: 0}
   lootBoxPrefabs:
-  - {fileID: 5854216635654801776, guid: 2a940390d087a2e429198cf55665cb47, type: 3}
-  - {fileID: 6197794834076759830, guid: 68e9422e4270d5f48870e3a32f46698c, type: 3}
-  - {fileID: 7211976546214358171, guid: a76fd4dff69751c47b63b02ff50eb0bf, type: 3}
-  - {fileID: 5854216635654801776, guid: 6bf368a9e9d84854284955b59fecaa3b, type: 3}
-  - {fileID: 5854216635654801776, guid: 3a00e08706ed9dd4b9dfd1ac99fb5241, type: 3}
+  - {fileID: 5854216635654801776, guid: cf788b612840ba7409619bef775e019d, type: 3}
+  - {fileID: 6197794834076759830, guid: 4f3f31d43fa77844fa28448cfd836602, type: 3}
+  - {fileID: 7211976546214358171, guid: 036450a0d870b79409faf2d46ca21fb2, type: 3}
+  - {fileID: 7211976546214358171, guid: 90e34ed115ac19947b47bc5a4e24c888, type: 3}
+  - {fileID: 5854216635654801776, guid: 4152bccd8402ebe4699e78677d583be1, type: 3}
   - {fileID: 5854216635654801776, guid: 6f0d8b3aae95e9d44866ab4f10edcde1, type: 3}
-  - {fileID: 5854216635654801776, guid: 3bd58ffc04d39e540ae0e43e32500b69, type: 3}
-  - {fileID: 5854216635654801776, guid: ac83858f677f0244cab0f62a4acd9a7f, type: 3}
+  - {fileID: 7211976546214358171, guid: b8b71096890bc7f48b4331c4927ff61b, type: 3}
+  - {fileID: 5854216635654801776, guid: 6fba0535367da524e82704dfafb67256, type: 3}
   assignedLoot: {fileID: 0}
 --- !u!61 &3284290389174212584
 BoxCollider2D:

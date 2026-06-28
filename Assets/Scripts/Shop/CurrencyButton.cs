@@ -2,11 +2,7 @@ using UnityEngine;
 
 public class CurrencyButton : MonoBehaviour
 {
-    public enum TransactionType
-    {
-        Buy,
-        Sell
-    }
+    public enum TransactionType { Buy, Sell }
 
     [Header("Transaction")]
     public TransactionType transactionType;
@@ -19,38 +15,25 @@ public class CurrencyButton : MonoBehaviour
     public int sellPrice = 0;
     public GameObject lootToRemove;
 
-    // Assign this to the Button's OnClick()
     public void ProcessTransaction()
     {
-        if (ShopInventory.Instance == null)
-        {
-            Debug.LogError("ShopInventory not found!");
-            return;
-        }
+        if (ShopInventory.Instance == null) { Debug.LogError("ShopInventory not found!"); return; }
 
         switch (transactionType)
         {
             case TransactionType.Buy:
-
                 if (ShopInventory.Instance.SpendCurrency(buyPrice))
                 {
-                    if (powerUpToUnlock != null)
-                        powerUpToUnlock.SetActive(true);
-
-                    Debug.Log("Bought power-up for $" + buyPrice);
+                    if (powerUpToUnlock != null) powerUpToUnlock.SetActive(true);
+                    Debug.Log("Bought for $" + buyPrice);
                 }
-
+                else Debug.Log("Not enough currency.");
                 break;
 
             case TransactionType.Sell:
-
                 ShopInventory.Instance.AddCurrency(sellPrice);
-
-                if (lootToRemove != null)
-                    lootToRemove.SetActive(false);
-
-                Debug.Log("Sold loot for $" + sellPrice);
-
+                if (lootToRemove != null) lootToRemove.SetActive(false);
+                Debug.Log("Sold for $" + sellPrice);
                 break;
         }
     }
