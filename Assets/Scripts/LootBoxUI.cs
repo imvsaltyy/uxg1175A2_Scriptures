@@ -3,15 +3,19 @@ using UnityEngine.UI;
 
 public class LootBoxUI : MonoBehaviour
 {
+    [Header("UI References")]
     public Transform gridParent;
     public inventoryUI inventoryUIPanel;
-    public Text rarityText;    // assign in Inspector to show rarity label
-    public Text sellValueText; // assign in Inspector to show sell value
+    public Text rarityText;
+    public Text sellValueText;
 
-    // Set by lootBox.cs before this panel activates
+    [Header("Current Opened LootBox Data")]
     public static GameObject assignedLoot;
     public static string assignedRarity = "Common";
     public static float assignedSellValue = 0f;
+
+    // This stores which physical lootbox is currently opened
+    public static lootBox currentLootBox;
 
     private Sprite originalSprite;
     private Color originalColor;
@@ -25,6 +29,8 @@ public class LootBoxUI : MonoBehaviour
             originalSprite = slot.sprite;
             originalColor = slot.color;
         }
+
+        RefreshUI();
     }
 
     private void OnEnable()
@@ -47,7 +53,9 @@ public class LootBoxUI : MonoBehaviour
         }
 
         Transform firstSlot = gridParent.GetChild(0);
-        Image slotImage = firstSlot.GetComponent<Image>();
+
+        // This allows it to find the Image even if it is on a child object
+        Image slotImage = firstSlot.GetComponentInChildren<Image>(true);
 
         if (slotImage == null)
         {
@@ -58,10 +66,13 @@ public class LootBoxUI : MonoBehaviour
         return slotImage;
     }
 
-    void RefreshUI()
+    public void RefreshUI()
     {
         Image slotImage = GetLootSlotImage();
         if (slotImage == null) return;
+
+        // Make sure the slot/image is visible
+        slotImage.gameObject.SetActive(true);
 
         if (assignedLoot != null)
         {
@@ -88,9 +99,12 @@ public class LootBoxUI : MonoBehaviour
 
         if (sellValueText != null)
             sellValueText.text = "Sell: $" + assignedSellValue.ToString("F0");
+
+        Debug.Log("LootBoxUI refreshed. Loot: " +
+            (assignedLoot != null ? assignedLoot.name : "NULL"));
     }
 
-    // Wired to "Take" button in Inspector
+    // Put this on the Take button OnClick()
     public void AddIntoInventory()
     {
         Debug.Log("Take button clicked.");
@@ -107,8 +121,10 @@ public class LootBoxUI : MonoBehaviour
             return;
         }
 
+        // Make a copy of the loot prefab for inventory
         GameObject toBeAdded = Instantiate(assignedLoot, InventoryManager.Instance.transform);
 
+        // Copy rarity and sell value into the inventory item
         iInventory inv = toBeAdded.GetComponent<iInventory>();
         if (inv != null)
         {
@@ -118,6 +134,7 @@ public class LootBoxUI : MonoBehaviour
 
         InventoryManager.Instance.AddItem(toBeAdded);
 
+        Debug.Log("Added loot into inventory: " + toBeAdded.name);
         Debug.Log("Inventory count is now: " + InventoryManager.Instance.inventory.Count);
 
         if (inventoryUIPanel != null)
@@ -130,7 +147,28 @@ public class LootBoxUI : MonoBehaviour
             Debug.LogWarning("inventoryUIPanel is not assigned in LootBoxUI Inspector.");
         }
 
+        // Destroy the actual lootbox that was opened
+        if (currentLootBox != null)
+        {
+            Destroy(currentLootBox.gameObject);
+            currentLootBox = null;
+        }
+
+        // Clear shared UI data
         assignedLoot = null;
+        assignedRarity = "Common";
+        assignedSellValue = 0f;
+
+        gameObject.SetActive(false);
+    }
+
+    public void CloseLootBoxUI()
+    {
+        assignedLoot = null;
+        assignedRarity = "Common";
+        assignedSellValue = 0f;
+        currentLootBox = null;
+
         gameObject.SetActive(false);
     }
 }

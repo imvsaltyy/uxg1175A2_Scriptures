@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8692745274272608981}
   - component: {fileID: 8123611828028858884}
+  - component: {fileID: 8825986923178563406}
   m_Layer: 0
   m_Name: yoyo
   m_TagString: Untagged
@@ -91,3 +92,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8825986923178563406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854216635654801776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6505f904483c2cd4b9b39d96417a7541, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::iInventory
+  lootID: 
+  rarity: 
+  sellValue: 0
+  dropRate: 0
+  sprite: {fileID: 0}
