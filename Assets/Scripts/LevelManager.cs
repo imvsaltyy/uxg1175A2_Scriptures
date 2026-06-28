@@ -54,7 +54,47 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        LoadSelectedLevel();
+        //LoadSelectedLevel();
+    }
+
+    public void SetupLevelAfterNodeClick(GameObject newActiveLevel)
+    {
+        if (newActiveLevel == null)
+        {
+            Debug.LogWarning("SetupLevelAfterNodeClick failed: newActiveLevel is null.");
+            return;
+        }
+
+        if (enemySpawnCoroutine != null)
+        {
+            StopCoroutine(enemySpawnCoroutine);
+            enemySpawnCoroutine = null;
+        }
+
+        ResetLevelProgress();
+
+        activeLevelObject = newActiveLevel;
+        levelID = activeLevelObject.name;
+
+        AssignLevelData(levelID);
+
+        FindEnemySpawnPoints();
+        FindLootBoxSpawnPoints();
+        FindEndpoint();
+
+        SpawnLootBoxes();
+
+        if (CanSpawnEnemies())
+        {
+            enemySpawnCoroutine = StartCoroutine(SpawnEnemiesRoutine());
+        }
+        else
+        {
+            Debug.Log("This level does not spawn enemies.");
+            ActivateEndpoint();
+        }
+
+        Debug.Log("Level setup after node click: " + levelID);
     }
 
     void LoadSelectedLevel()

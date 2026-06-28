@@ -45,14 +45,25 @@ public class LevelNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (map != null)
             map.SetActive(false);
 
+        // Turn off every level
         foreach (GameObject level in allLevels)
         {
             if (level != null)
                 level.SetActive(false);
         }
 
+        // Turn on the selected level
         if (levelToActivate != null)
+        {
             levelToActivate.SetActive(true);
+        }
+
+        // Tell LevelManager to spawn enemies, lootboxes, endpoint, etc.
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.SetupLevelAfterNodeClick(levelToActivate);
+        }
+        ;
     }
 
     public void ClearNode()
