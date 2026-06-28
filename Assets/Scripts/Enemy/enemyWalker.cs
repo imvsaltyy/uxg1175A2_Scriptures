@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class enemyWalker : spawnEnemy
 {
-    AudioManager audioManager;
-
     private void Awake()
     {
         enemyTypeName = "enemy_walker";
@@ -17,7 +15,6 @@ public class enemyWalker : spawnEnemy
         // Attack collider is on first child
         if (transform.childCount > 0)
             attackCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
     }
 
     protected override void Update()
@@ -29,8 +26,6 @@ public class enemyWalker : spawnEnemy
     {
         if (Atk == null)
             Atk = StartCoroutine(Attack());
-        audioManager.PlaySFX(audioManager.duckshoot);
-
     }
 
     IEnumerator Attack()

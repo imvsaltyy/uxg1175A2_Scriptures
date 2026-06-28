@@ -20,9 +20,6 @@ public class PlayerManager : MonoBehaviour
     [Header("Level Progress")]
     public List<string> completedLevelIDs = new List<string>();
 
-    AudioManager audioManager;
-
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,7 +30,6 @@ public class PlayerManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
     }
 
     public void SelectWeapon(string weaponID)
@@ -95,7 +91,6 @@ public class PlayerManager : MonoBehaviour
     {
         if (InventoryManager.Instance != null)
             InventoryManager.Instance.ClearInventory();
-        audioManager.PlaySFX(audioManager.characterdeath);
 
         Debug.Log("Player died. Inventory cleared. Currency and upgrades retained.");
     }

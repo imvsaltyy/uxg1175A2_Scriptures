@@ -5,14 +5,10 @@ public class Bullet : MonoBehaviour
     public float bulletSpeed = 1f;
     public string fireTag = "";
     public float damageDelt;
-    AudioManager audioManager;
-
 
     private void Start()
     {
         Destroy(gameObject, 5f);
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-
     }
 
     private void FixedUpdate()
@@ -22,14 +18,6 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // If bullet hits wall, destroy immediately
-        if (collision.CompareTag("Wall"))
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-
         // Ignore the shooter's own tag AND ignore other bullets/projectiles
         if (string.IsNullOrEmpty(fireTag)) return;
         if (collision.CompareTag(fireTag)) return;
@@ -41,8 +29,6 @@ public class Bullet : MonoBehaviour
         {
             PlayerStats ps = collision.GetComponent<PlayerStats>();
             if (ps != null) ps.TakeDamage(damageDelt);
-
-            audioManager.PlaySFX(audioManager.characterdamaged);
         }
         else if (collision.CompareTag("Enemy"))
         {
