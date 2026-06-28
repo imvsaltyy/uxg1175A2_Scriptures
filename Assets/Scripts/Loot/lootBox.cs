@@ -12,8 +12,8 @@ public class lootBox : iInventory
     [Header("CSV Settings")]
     public bool useCSVData = true;
 
-    [Header("Trigger Settings")]
-    public bool openOnTriggerEnter = true;
+    [Header("Collision Settings")]
+    public bool openOnCollisionEnter = true;
     public string playerTag = "Player";
 
     [Header("Rolled Loot")]
@@ -325,23 +325,23 @@ public class lootBox : iInventory
             " | Showing loot: " + assignedLoot.name);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Lootbox trigger entered by: " + collision.name + " | Tag: " + collision.tag);
+        Debug.Log("Lootbox collided with: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
 
-        if (!openOnTriggerEnter) return;
+        if (!openOnCollisionEnter) return;
 
-        if (collision.CompareTag(playerTag))
+        if (collision.gameObject.CompareTag(playerTag))
         {
             OpenLootBox();
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log("Lootbox trigger exited by: " + collision.name + " | Tag: " + collision.tag);
+        Debug.Log("Lootbox collision exited by: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
 
-        if (collision.CompareTag(playerTag))
+        if (collision.gameObject.CompareTag(playerTag))
         {
             if (LootBoxUI.currentLootBox == this)
             {
