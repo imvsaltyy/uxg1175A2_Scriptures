@@ -22,6 +22,14 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // If bullet hits wall, destroy immediately
+        if (collision.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+
         // Ignore the shooter's own tag AND ignore other bullets/projectiles
         if (string.IsNullOrEmpty(fireTag)) return;
         if (collision.CompareTag(fireTag)) return;

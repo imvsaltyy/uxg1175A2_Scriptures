@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour
 {
     // Existing data arrays
     [HideInInspector] public static string[] enemyType;
-    [HideInInspector] public static string[] enemyVariant;
     [HideInInspector] public static string[] weaponTypes;
     [HideInInspector] public static string[] playerStats;
     [HideInInspector] public static string[] shopUpgrades;
@@ -22,7 +21,6 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         enemyType = LoadCSV("EnemyStatsTrial");
-        enemyVariant = LoadCSV("EnemyVariantTrial");
         weaponTypes = LoadCSV("WeaponStatsTrial");
         playerStats = LoadCSV("PlayerStatsTrial");
         shopUpgrades = LoadCSV("ShopUpgradesTrial");

@@ -17,6 +17,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Start.unity
     guid: a8da2162658c3ed47911ece3bbf9d1d6
+  - enabled: 1
+    path: Assets/Scenes/caijie testing.unity
+    guid: 9deeb375fbbbf484d96a93fcd2f450b4
+  - enabled: 1
+    path: Assets/Scenes/LevelDesign.unity
+    guid: 481a244df5befc248a4d67ad980bc8ae
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
