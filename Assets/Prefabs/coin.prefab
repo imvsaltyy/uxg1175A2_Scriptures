@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.38906, y: 1.62086, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 1471754059234924157, guid: 9530bbcc7a5f9fa41b9ccfacaeae1051, type: 3}
   m_Color: {r: 1, g: 0.9816059, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -142,8 +142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDrop
   lootID: 
+  rarity: 
   sellValue: 0
   dropRate: 0
   sprite: {fileID: 0}
-  toID: oldCoin
-  toBeAddedItem: {fileID: 0}
+  toID: Coin

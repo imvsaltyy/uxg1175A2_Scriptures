@@ -18,7 +18,8 @@ public class LootBoxUI : MonoBehaviour
 
     void Start()
     {
-        Image slot = gridParent.GetChild(0).GetComponent<Image>();
+        Image slot = GetLootSlotImage();
+
         if (slot != null)
         {
             originalSprite = slot.sprite;
@@ -31,18 +32,49 @@ public class LootBoxUI : MonoBehaviour
         RefreshUI();
     }
 
+    Image GetLootSlotImage()
+    {
+        if (gridParent == null)
+        {
+            Debug.LogWarning("LootBoxUI: gridParent is not assigned.");
+            return null;
+        }
+
+        if (gridParent.childCount == 0)
+        {
+            Debug.LogWarning("LootBoxUI: gridParent has no slots.");
+            return null;
+        }
+
+        Transform firstSlot = gridParent.GetChild(0);
+        Image slotImage = firstSlot.GetComponent<Image>();
+
+        if (slotImage == null)
+        {
+            Debug.LogWarning("LootBoxUI: first slot has no Image component.");
+            return null;
+        }
+
+        return slotImage;
+    }
+
     void RefreshUI()
     {
-        Image slotImage = gridParent.GetChild(0).GetComponent<Image>();
+        Image slotImage = GetLootSlotImage();
         if (slotImage == null) return;
 
         if (assignedLoot != null)
         {
-            SpriteRenderer sr = assignedLoot.GetComponent<SpriteRenderer>();
+            SpriteRenderer sr = assignedLoot.GetComponentInChildren<SpriteRenderer>(true);
+
             if (sr != null)
             {
                 slotImage.sprite = sr.sprite;
-                slotImage.color = sr.color;
+                slotImage.color = Color.white;
+            }
+            else
+            {
+                Debug.LogWarning("LootBoxUI: assignedLoot has no SpriteRenderer.");
             }
         }
         else
@@ -51,7 +83,6 @@ public class LootBoxUI : MonoBehaviour
             slotImage.color = originalColor;
         }
 
-        // Update optional rarity and sell value labels
         if (rarityText != null)
             rarityText.text = assignedRarity;
 
@@ -62,31 +93,42 @@ public class LootBoxUI : MonoBehaviour
     // Wired to "Take" button in Inspector
     public void AddIntoInventory()
     {
+        Debug.Log("Take button clicked.");
+
         if (assignedLoot == null)
         {
             Debug.LogWarning("LootBoxUI: No loot to add.");
             return;
         }
 
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("No InventoryManager found in scene.");
+            return;
+        }
+
         GameObject toBeAdded = Instantiate(assignedLoot, InventoryManager.Instance.transform);
 
-        // Carry rarity and final sell value onto the inventory item
         iInventory inv = toBeAdded.GetComponent<iInventory>();
         if (inv != null)
         {
             inv.rarity = assignedRarity;
-            inv.sellValue = assignedSellValue; // already has multiplier applied
+            inv.sellValue = assignedSellValue;
         }
 
         InventoryManager.Instance.AddItem(toBeAdded);
-        Debug.Log("Added " + assignedLoot.name + " [" + assignedRarity + "] to inventory.");
+
+        Debug.Log("Inventory count is now: " + InventoryManager.Instance.inventory.Count);
 
         if (inventoryUIPanel != null)
+        {
             inventoryUIPanel.refreshInventory();
-
-        // Disable take button so player can't take twice from same box
-        Button btn = GetComponentInChildren<Button>();
-        if (btn != null) btn.interactable = false;
+            Debug.Log("Inventory UI refreshed.");
+        }
+        else
+        {
+            Debug.LogWarning("inventoryUIPanel is not assigned in LootBoxUI Inspector.");
+        }
 
         assignedLoot = null;
         gameObject.SetActive(false);

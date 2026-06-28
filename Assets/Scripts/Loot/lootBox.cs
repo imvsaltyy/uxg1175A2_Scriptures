@@ -13,7 +13,32 @@ public class lootBox : iInventory
 
     void Start()
     {
+        FindUIObjects();
         RollLootBoxContents();
+    }
+
+    void FindUIObjects()
+    {
+        GameObject InventoryLoot = GameObject.Find("InventoryLoot");
+
+        if (InventoryLoot == null)
+        {
+            Debug.LogWarning("InventoryLoot not found in scene!");
+            return;
+        }
+
+        Transform lootBoxUI = InventoryLoot.transform.Find("LootBoxUI");
+        Transform inventoryUI = InventoryLoot.transform.Find("InventoryUI");
+
+        if (lootBoxUI != null)
+        {
+            lootBoxUIObject = lootBoxUI.gameObject;
+        }
+
+        if (inventoryUI != null)
+        {
+            inventoryUIObject = inventoryUI.gameObject;
+        }
     }
 
     void RollLootBoxContents()
@@ -153,6 +178,8 @@ public class lootBox : iInventory
 
         if (lootBoxUIObject != null) lootBoxUIObject.SetActive(true);
         if (inventoryUIObject != null) inventoryUIObject.SetActive(true);
+
+        Debug.Log(lootBoxUIObject);
     }
 
     private void OnTriggerExit2D(Collider2D collision)

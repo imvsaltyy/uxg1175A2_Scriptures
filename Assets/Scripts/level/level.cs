@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class LevelNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI")]
     public GameObject highlightImage;
+    public Button button;
 
     [Header("Map")]
-    public GameObject map;      // Drag your Map GameObject here
+    public GameObject map;
 
     [Header("Level")]
     public GameObject levelToActivate;
@@ -15,37 +17,31 @@ public class LevelNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [Header("All Levels")]
     public GameObject[] allLevels;
 
-    private bool selected = false;
+    [Header("Path")]
+    public bool unlocked = false;
+    public bool cleared = false;
+    public LevelNode[] nextNodes;
+
+    public static LevelNode currentNode;
 
     private void Start()
     {
         if (highlightImage != null)
             highlightImage.SetActive(false);
+
+        UpdateButton();
     }
 
-    // Hover
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (highlightImage != null)
-            highlightImage.SetActive(true);
-    }
-
-    // Exit Hover
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (!selected && highlightImage != null)
-            highlightImage.SetActive(false);
-    }
-
-    // Called by the Button OnClick()
     public void OpenLevel()
     {
-        selected = true;
+        if (!unlocked || cleared)
+        {
+            Debug.Log("This node is locked or already cleared.");
+            return;
+        }
 
-        if (highlightImage != null)
-            highlightImage.SetActive(true);
+        currentNode = this;
 
-        // Hide the map
         if (map != null)
             map.SetActive(false);
 
@@ -58,6 +54,59 @@ public class LevelNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         // Turn on the selected level
         if (levelToActivate != null)
+        {
             levelToActivate.SetActive(true);
+        }
+
+        // Tell LevelManager to spawn enemies, lootboxes, endpoint, etc.
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.SetupLevelAfterNodeClick(levelToActivate);
+        }
+        ;
+    }
+
+    public void ClearNode()
+    {
+        cleared = true;
+        unlocked = false;
+
+        for (int i = 0; i < nextNodes.Length; i++)
+        {
+            if (nextNodes[i] != null && !nextNodes[i].cleared)
+            {
+                nextNodes[i].unlocked = true;
+                nextNodes[i].UpdateButton();
+            }
+        }
+
+        UpdateButton();
+    }
+
+    public void UpdateButton()
+    {
+        if (button != null)
+        {
+            button.interactable = unlocked && !cleared;
+        }
+
+        if (highlightImage != null)
+        {
+            highlightImage.SetActive(false);
+        }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!unlocked || cleared) return;
+
+        if (highlightImage != null)
+            highlightImage.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (highlightImage != null)
+            highlightImage.SetActive(false);
     }
 }
