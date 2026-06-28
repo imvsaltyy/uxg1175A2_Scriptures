@@ -17,8 +17,7 @@ public class SceneLoader : MonoBehaviour
 
     public void GoToMainGameScene()
     {
-        //SceneManager.LoadScene("Main");
-        SceneManager.LoadScene("caijie testing");
+        SceneManager.LoadScene("Main");
     }
 
     public void GoToLevelSelectScene()

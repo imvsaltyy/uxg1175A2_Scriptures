@@ -73,10 +73,6 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        //Check if its paused
-        if (PauseController.isPaused)
-            return;
-
         MovePlayer();
         RotateToMouse();
         CheckEnemiesInFOV();
@@ -181,7 +177,7 @@ public class PlayerControl : MonoBehaviour
     {
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
-        transform.position += (Vector3)(moveInput * speed * Time.unscaledDeltaTime);
+        transform.position += (Vector3)(moveInput * speed * Time.deltaTime);
     }
 
     private void RotateToMouse()
@@ -201,13 +197,13 @@ public class PlayerControl : MonoBehaviour
             playerSprite.rotation = Quaternion.RotateTowards(
                 playerSprite.rotation,
                 targetRotation,
-                rotationSpeed * Time.unscaledDeltaTime
+                rotationSpeed * Time.deltaTime
             );
 
             visionLight.rotation = Quaternion.RotateTowards(
                 visionLight.rotation,
                 targetRotation,
-                rotationSpeed * Time.unscaledDeltaTime
+                rotationSpeed * Time.deltaTime
             );
 
             if (weaponHolder != null && weaponHolder.parent != playerSprite)
@@ -215,7 +211,7 @@ public class PlayerControl : MonoBehaviour
                 weaponHolder.rotation = Quaternion.RotateTowards(
                     weaponHolder.rotation,
                     targetRotation,
-                    rotationSpeed * Time.unscaledDeltaTime
+                    rotationSpeed * Time.deltaTime
                 );
             }
         }
